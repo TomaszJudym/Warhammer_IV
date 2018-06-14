@@ -1,0 +1,3 @@
+"E:\Tools\CLion 2017.3.2\bin\cmake\bin\cmake.exe" -E remove -f CMakeFiles\Warhammer_II.dir/objects.a
+E:\Tools\MinGw\bin\ar.exe cr CMakeFiles\Warhammer_II.dir/objects.a @CMakeFiles\Warhammer_II.dir\objects1.rsp
+E:\Tools\MinGw\bin\g++.exe  -std=c++14 -static -g  -mwindows -Wl,--whole-archive CMakeFiles\Warhammer_II.dir/objects.a -Wl,--no-whole-archive  -o Warhammer_II.exe -Wl,--out-implib,libWarhammer_II.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Warhammer_II.dir\linklibs.rsp
