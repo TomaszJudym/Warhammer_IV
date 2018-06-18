@@ -19,6 +19,7 @@
 #include <cmath>
 #include <chrono>
 #include "MainMenu.h"
+#include "ChoosingScreen.h"
 #include "gameConstants.h"
 #include "units/Unit.h"
 
@@ -32,7 +33,8 @@ public:
     void        check_units_combat_status();
     void        units_fight();
     short       framesToNextAttack;
-    bool isInMainMenu;
+    bool        isInMainMenu;
+    bool        isInChoosingScreen;
 
 
 private:
@@ -61,6 +63,7 @@ private:
     // mainMenu, like run void inside game main run void, to display start, options and exit
     // player should be able to come back to it after pressing back button
     MainMenu mainGameMenu;
+    ChoosingScreen choosingScreen;
 
     std::vector<Unit>       units;
     Unit*                   choosedUnit;

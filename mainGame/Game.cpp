@@ -17,7 +17,9 @@ Game::Game()
         , choosedUnit(nullptr)
         , framesToNextAttack(0)
         , mainGameMenu( &gameWindow, windowWidth, windowHeight )
+        , choosingScreen( &gameWindow, windowWidth, windowHeight )
         , isInMainMenu(true)
+        , isInChoosingScreen(false)
 {
     gameWindow.setKeyRepeatEnabled(false);
 
@@ -35,6 +37,7 @@ void Game::run()
     while (gameWindow.isOpen())
     {
         //mainGameMenu.run();
+        choosingScreen.run();
         sf::Time elapsedTime = clock.restart();
         timeSinceLastUpdate += elapsedTime;
         mainTime = mainClock.getElapsedTime();

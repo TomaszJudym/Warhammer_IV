@@ -22,6 +22,7 @@ set(SOURCE_FILES main.cpp
         mainGame/MainMenu.h
         mainGame/MainMenu.cpp
         mainGame/ChoosingScreen.h
+        mainGame/ChoosingScreenInitLoad.inl
         mainGame/ChoosingScreen.cpp)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
