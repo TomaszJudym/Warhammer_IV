@@ -1,58 +1,9 @@
 #include "../Game.h"
 #include "loader.h"
-
+#include "../gameConstants.h"
 const sf::Vector2f cardSize = { 120, 110 };
 
-const std::string nodUnitsPaths[] = {
-        "img/nod/attack_bike.png",
-        "img/nod/militant.png",
-        "img/nod/avatar.png",
-        "img/nod/carryall.png",
-        "img/nod/commando.png",
-        "img/nod/fanatic.png",
-        "img/nod/flame_tank.png",
-        "img/nod/black_hand.png",
-        "img/nod/shadow.png",
-        "img/nod/scorp.png",
-        "img/nod/saboteur.png"
-};
 
-const std::string gniUnitsPaths[] = {
-        "img/gni/GDIrifle.png",
-        "img/gni/GDImissile.png",
-        "img/gni/GDIsniper.png",
-        "img/gni/GDIgrenade.png",
-        "img/gni/GDImamooth.png",
-        "img/gni/GDIcolos.png",
-        "img/gni/GDIcommando.png",
-        "img/gni/GDIbmp.png",
-        "img/gni/GDIjugg.png"};
-
-enum nodUnits {
-    attack_bike,
-    militant,
-    avatar,
-    carryall,
-    commando_slut,
-    fanatic,
-    flame_tank,
-    black_hand,
-    shadow,
-    scorp,
-    sabouteur
-};
-
-enum gniUnits {
-        rifle,
-        missile,
-        sniper,
-        grenade,
-        mamooth,
-        colos,
-        commando,
-        bwp,
-        juggernaut
-};
 
 void Game::initLoad()
 {

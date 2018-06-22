@@ -10,7 +10,9 @@ const sf::Time ChoosingScreen::TimePerFrame = sf::seconds(1.f/60.f);
 ChoosingScreen::ChoosingScreen(sf::RenderWindow* _winPtr, int _width, int _height)
 : gameWindowPtr( _winPtr ),
   width( _width ),
-  height( _height )
+  height( _height ),
+  chooseScreenDeltaY(130),
+  amountOfChosenUnitsToDisplay(0)
 {
     initLoad();
 
@@ -23,8 +25,8 @@ void ChoosingScreen::processEvents()
     {
         switch (event.type)
         {
-            case sf::Event::MouseButtonReleased:
-               // TODO handlePlayerInputMouse( event.mouseButton.button, true );
+            case sf::Event::MouseWheelMoved:
+                handleInputMouseScroll( event.mouseWheel.delta );
                 break;
 
             case sf::Event::Closed:
@@ -34,24 +36,50 @@ void ChoosingScreen::processEvents()
     }
 }
 
+void ChoosingScreen::handleInputMouseScroll( float _delta )
+{
+
+    // scrolling up
+        if (_delta < 0 ) {
+            if( chooseScreenDeltaY + 10 < 300 ) {
+                chooseScreenDeltaY += 10;
+                unitsToChooseFromS.setTextureRect(sf::IntRect(0,
+                                                              chooseScreenDeltaY,
+                                                              (int) backOfUToChooseSizeX,
+                                                              backOfUToChooseSizeY));
+            }
+        }
+        // scrolling down
+        if (_delta > 0  ) {
+            if( chooseScreenDeltaY - 10 > 120 ) {
+                chooseScreenDeltaY -= 10;
+                unitsToChooseFromS.setTextureRect(sf::IntRect(0,
+                                                              chooseScreenDeltaY,
+                                                              (int) backOfUToChooseSizeX,
+                                                              backOfUToChooseSizeY));
+            }
+        }
+}
+
 void ChoosingScreen::run()
 {
-    sf::Clock clock;
-    sf::Clock mainClock;
-    sf::Time timeSinceLastUpdate = sf::Time::Zero;
-
     while( gameWindowPtr->isOpen() )
     {
         processEvents();
         render();
     }
+    std::cout << "exiting choosing screen..." << std::endl;
 }
 
 void ChoosingScreen::render()
 {
-    gameWindowPtr->clear( sf::Color::Black );
-    gameWindowPtr->draw( backUToChoose );
-    gameWindowPtr->draw( backUChosen );
-    gameWindowPtr->draw( backDescOfUnits );
+    gameWindowPtr->clear(sf::Color::Black);
+    // background of divs
+    gameWindowPtr->draw( unitsToChooseFromS );
+    gameWindowPtr->draw( unitsChosenS );
+    for( auto& x : pointsOnMiddleTable )
+        gameWindowPtr->draw( x );
+    gameWindowPtr->draw( pointsOnMiddleTable[0] );
+    gameWindowPtr->draw( unitDescriptionS );
     gameWindowPtr->display();
 }

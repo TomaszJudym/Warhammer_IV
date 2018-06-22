@@ -10,6 +10,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <array>
 #include "units/Unit.h"
 #include "gameConstants.h"
 
@@ -19,19 +20,52 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
+
+
 class ChoosingScreen {
+    int chooseScreenDeltaY;
+    short amountOfChosenUnitsToDisplay;
+
+
     const int width;
     const int height;
     sf::RenderWindow* gameWindowPtr;
     sf::Font choosingScreenFont;
+    //########################################
+    // left div with units to choose from
+    sf::RenderTexture unitsToChooseFromRT;
+    sf::Sprite unitsToChooseFromS;
 
-    // 3 main divs of choosing screen:
-    // 1. for units to choose from
-    // 2. for unit chosen
-    // 3. for description and statistics of selected unit
-    sf::RectangleShape backUToChoose;
-    sf::RectangleShape backUChosen;
-    sf::RectangleShape backDescOfUnits;
+    // left menu of units to choose from
+    sf::Text unitTypes[amountOfUnitTypes];
+
+    // NOD UNITS PORTRAITS
+    sf::Texture nodUnitsToChooseTs[amountOfNodUnits];
+    sf::Sprite nodUnitsToChooseSs[amountOfNodUnits];
+
+    // NOD UNITS PORTRAITS
+    sf::Texture gniUnitsToChooseTs[amountOfNodUnits];
+    sf::Sprite gniUnitsToChooseSs[amountOfNodUnits];
+
+    //########################################
+
+    //########################################
+    // middle div with already chosen units
+    sf::Texture unitsChosenT;
+    sf::Sprite unitsChosenS;
+
+    std::array<sf::Sprite*, 18> chosenUnitsToDisplay;
+    sf::RectangleShape pointsOnMiddleTable[18];
+    //########################################
+
+    //########################################
+    // right div with units description
+    sf::RenderTexture unitDescriptionT;
+    sf::Sprite unitDescriptionS;
+    sf::Sprite portraitOfUnitToDescribe;
+    sf::Text descriptionOfUnit;
+    // TODO separate object for units bars with stats
+    //########################################
 
     // array of maps with units of each faction
     std::array< std::map<std::string, Unit>, amountOfRacesInGame > races;
@@ -45,15 +79,13 @@ class ChoosingScreen {
     // portraits of players to display at the top of screen
     std::pair<sf::Sprite, sf::Sprite> playerPortraits;
 
-    sf::RectangleShape tableColumns[3];
-    sf::RectangleShape tableRows[4];
-
     static const sf::Time	TimePerFrame;
     void initLoad();
 
 public:
     explicit ChoosingScreen( sf::RenderWindow* _winPtr, int _width, int _height );
 
+    void handleInputMouseScroll( float _scrollDelta );
     void processEvents();
     void run();
     void render();
