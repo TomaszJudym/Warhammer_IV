@@ -74,7 +74,7 @@ void ChoosingScreen::run()
 void ChoosingScreen::render()
 {
     gameWindowPtr->clear(sf::Color::Black);
-    // background of divs
+
     gameWindowPtr->draw( unitsToChooseFromS );
     gameWindowPtr->draw( unitsChosenS );
     for( auto& x : pointsOnMiddleTable )

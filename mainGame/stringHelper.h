@@ -8,5 +8,7 @@
 template <typename T>
 std::string toString(const T& value);
 
+std::string cutTo30charLines( char* _input );
+
 #include "stringHelper.inl"
 #endif // BOOK_STRINGHELPER_HPP

@@ -156,12 +156,24 @@ void ChoosingScreen::initLoad()
     descriptionOfUnit.setFont( choosingScreenFont );
     descriptionOfUnit.setCharacterSize( 10 );
     descriptionOfUnit.setFillColor( sf::Color::Black );
-    descriptionOfUnit.setString( "Init desc\nMeans no desc" );
-    descriptionOfUnit.setPosition( 40.f, 100.f );
+    // max 30 width
+    //TODO function to insert \n after every 30 chars would b good
+    // idea
+    descriptionOfUnit.setString( "Kinda long description of scaven artillery\n"
+                                "to check how long these can be so I will b"
+                                "able to make comment with maximal length of\n"
+                                "line in this qt div : >");
+    descriptionOfUnit.setPosition( 40.f, 170.f );
     unitDescriptionT.draw( descriptionOfUnit );
-    unitDescriptionT.display();
     unitDescriptionS.setPosition( windowWidth-descMenuWidth-5.f, 150.f );
+    portraitOfUnitToDescribe.setTexture( nodUnitsToChooseTs[0] );
+    portraitOfUnitToDescribe.setOrigin( nodUnitsToChooseTs[0].getSize().x/2,
+                                        nodUnitsToChooseTs[0].getSize().y/2);
+    portraitOfUnitToDescribe.setPosition( descMenuWidth/2, 100.f );
+    unitDescriptionT.draw( portraitOfUnitToDescribe );
+    unitDescriptionT.display();
 
+    // portrait of unit to descript to
 
 
     //####################################################
