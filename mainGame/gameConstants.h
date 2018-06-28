@@ -3,9 +3,12 @@
 //
 
 #include <SFML/System/Vector2.hpp>
+#include <array>
 
 #ifndef _GAMECONSTANTS_H_
 #define _GAMECONSTANTS_H_
+
+#include "units/Unit.h"
 
 enum GAME_STATE{
     MAIN_MENU,
@@ -98,6 +101,9 @@ const std::string gniUnitsPaths[] = {
         "img/gni/GDIbmp.png",
         "img/gni/GDIjugg.png"};
 
+// TODO: create LU of available units to choose of all races
+// TODO: to emplace them in loop into vector of chosen units
+
 enum nodUnits {
     attack_bike,
     militant,
@@ -109,7 +115,7 @@ enum nodUnits {
     black_hand,
     shadow,
     scorp,
-    sabouteur,
+    saboteur,
     rocket
 };
 
@@ -124,6 +130,5 @@ enum gniUnits {
     bwp,
     juggernaut
 };
-
 
 #endif //_GAMECONSTANTS_H_

@@ -3,7 +3,6 @@
 //
 #include <algorithm>
 #include "Game.h"
-#include "stringHelper.h"
 #include "loadFiles/load.inl"
 
 const sf::Time Game::TimePerFrame = sf::seconds(1.f/60.f);
@@ -24,7 +23,6 @@ Game::Game()
     gameWindow.setKeyRepeatEnabled(false);
 
     initLoad();
-
 }
 
 void Game::run()
@@ -181,7 +179,7 @@ bool Game::unitsAreInCombat( const Unit* _attacker, const Unit* _target )
 
     // old diagnostic to watch collision checkers
     //gameWindow.display();
-   // gameWindow.draw( combatChecker );
+    //gameWindow.draw( combatChecker );
 
     if( combatChecker.getGlobalBounds().intersects( _target->getPortrait().getGlobalBounds() ) )
     {
@@ -250,7 +248,7 @@ void Game::units_fight()
     int j=0; // int for output
     bool resetFramesToNextAttack = false;
     ++framesToNextAttack;
-    if( framesToNextAttack == 650 )
+    if( framesToNextAttack == 200 )
     {
         resetFramesToNextAttack = true;
     }

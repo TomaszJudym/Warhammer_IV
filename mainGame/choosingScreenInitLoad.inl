@@ -159,10 +159,15 @@ void ChoosingScreen::initLoad()
     // max 30 width
     //TODO function to insert \n after every 30 chars would b good
     // idea
-    descriptionOfUnit.setString( "Kinda long description of scaven artillery\n"
-                                "to check how long these can be so I will b"
-                                "able to make comment with maximal length of\n"
-                                "line in this qt div : >");
+    std::string testDesc = "Speeder bike designed to catching retrieting"
+                            "\nenemy units from battlefield by shootin"
+                        "\nsmart rockets directly into their knees to dont"
+                        "\njust kill them, but to immobilize em and make"
+                        "\nsuffer as long as its possible so it would b"
+                        "\ncool to watch em die :>";
+    descriptionOfUnit.setString(
+            testDesc
+    );
     descriptionOfUnit.setPosition( 40.f, 170.f );
     unitDescriptionT.draw( descriptionOfUnit );
     unitDescriptionS.setPosition( windowWidth-descMenuWidth-5.f, 150.f );

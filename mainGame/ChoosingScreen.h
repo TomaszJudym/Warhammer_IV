@@ -11,12 +11,12 @@
 #include <map>
 #include <string>
 #include <array>
+#include "stringHelper.h"
 #include "units/Unit.h"
 #include "gameConstants.h"
 
 #ifndef _CHOOSINGSCREEN_H
 #define _CHOOSINGSCREEN_H
-
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -26,6 +26,7 @@ class ChoosingScreen {
     int chooseScreenDeltaY;
     short amountOfChosenUnitsToDisplay;
 
+    std::array<Unit, amountOfNodUnits> allGniUnitsDB;
 
     const int width;
     const int height;
@@ -40,8 +41,8 @@ class ChoosingScreen {
     sf::Text unitTypes[amountOfUnitTypes];
 
     // NOD UNITS PORTRAITS
-    sf::Texture nodUnitsToChooseTs[amountOfNodUnits];
-    sf::Sprite nodUnitsToChooseSs[amountOfNodUnits];
+     sf::Texture nodUnitsToChooseTs[amountOfNodUnits];
+     sf::Sprite nodUnitsToChooseSs[amountOfNodUnits];
 
     // NOD UNITS PORTRAITS
     sf::Texture gniUnitsToChooseTs[amountOfNodUnits];
@@ -86,6 +87,7 @@ public:
     explicit ChoosingScreen( sf::RenderWindow* _winPtr, int _width, int _height );
 
     void handleInputMouseScroll( float _scrollDelta );
+    void handleInputMouse( sf::Mouse::Button _released );
     void processEvents();
     void run();
     void render();

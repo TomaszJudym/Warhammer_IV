@@ -10,7 +10,8 @@ const float Unit::unitSpeed = 1.5;
 
 Unit::Unit( sf::Sprite& _portrait,
 char* _name,
-int _hp, float _fp,
+int _hp,
+float _fp,
 short _team ) :
          name(_name)
         ,hp(_hp)
