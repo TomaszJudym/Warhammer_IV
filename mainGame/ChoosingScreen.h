@@ -26,7 +26,7 @@ class ChoosingScreen {
     int chooseScreenDeltaY;
     short amountOfChosenUnitsToDisplay;
 
-    std::array<Unit, amountOfNodUnits> allGniUnitsDB;
+    std::array<Unit, amountOfNodUnits> allNodUnitsDB;
 
     const int width;
     const int height;
@@ -65,6 +65,7 @@ class ChoosingScreen {
     sf::Sprite unitDescriptionS;
     sf::Sprite portraitOfUnitToDescribe;
     sf::Text descriptionOfUnit;
+
     // TODO separate object for units bars with stats
     //########################################
 
@@ -81,17 +82,18 @@ class ChoosingScreen {
     std::pair<sf::Sprite, sf::Sprite> playerPortraits;
 
     static const sf::Time	TimePerFrame;
+
     void initLoad();
 
 public:
     explicit ChoosingScreen( sf::RenderWindow* _winPtr, int _width, int _height );
-
     void handleInputMouseScroll( float _scrollDelta );
     void handleInputMouse( sf::Mouse::Button _released );
+    void handleInputKeyboard( sf::Keyboard::Key _released );
     void processEvents();
     void run();
     void render();
-
+    const std::array<std::string, amountOfNodUnits> nodUntisdescriptions;
 };
 
 

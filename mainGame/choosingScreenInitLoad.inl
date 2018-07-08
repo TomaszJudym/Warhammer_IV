@@ -14,8 +14,8 @@ void ChoosingScreen::initLoad()
     {
         unitTypes[i].setFont( choosingScreenFont );
         unitTypes[i].setCharacterSize(16);
-        unitTypes[i].setFillColor( sf::Color::Black );
-        unitTypes[i].setPosition( 10.f, 128*(i+1) );
+        unitTypes[i].setFillColor( sf::Color::White );
+        unitTypes[i].setPosition( 10.f, 110*(i+1) );
         //unitTypes[i].setRotation(180);
     }
     // texts with units categories
@@ -26,77 +26,143 @@ void ChoosingScreen::initLoad()
     unitTypes[SIEGE_UNITS].setString( "SIEGE UNITS" );
     unitTypes[MONSTERS].setString( "MONSTERS" );
 
-
-    // main texture with whole left menu of units to choose from
-    unitsToChooseFromRT.create( (unsigned int)backOfUToChooseSizeX, (unsigned int)windowHeight );
-    unitsToChooseFromRT.clear( sf::Color::Cyan );
-    // setting text objects
-    for( i=0; i<amountOfUnitTypes; ++i )
-    {
-        unitsToChooseFromRT.draw( unitTypes[i] );
+    // unitsToChooseFromDB portraits:
+    for( auto& i : allNodUnitsDB ) {
+        i.getPortrait().setScale(0.7f, 0.7f);
     }
-    // sprite to display and manipulate menu with unit categories
-    // to choose from
-    unitsToChooseFromS.setTexture( unitsToChooseFromRT.getTexture() );
-    unitsToChooseFromS.setPosition( 5.f, 200.f );
-    unitsToChooseFromS.setTextureRect( sf::IntRect( 0, chooseScreenDeltaY, backOfUToChooseSizeX, backOfUToChooseSizeY  ) );
-    // lots off magic numbers here
-    // TODO refactor to make possible different
-    // TODO units amounts in different types
 
-
-
-    // unit portraits for left menu of units to choose from
-    // hero untis
-    for( i=0; i<amountOfNodUnits; ++i )
-    {
+    for( int i=0; i<amountOfNodUnits; ++i ) {
         nodUnitsToChooseTs[i].loadFromFile( nodUnitsPaths[i] );
         nodUnitsToChooseSs[i].setTexture( nodUnitsToChooseTs[i] );
         nodUnitsToChooseSs[i].setScale( 0.5f, 0.5f );
+    }
 
-    }
-    // melee units
-    int xAligningIter=0;
-    for( i = 0; i<3; ++i )
+    allNodUnitsDB = {
+                           Unit( nodUnitsToChooseSs[ attack_bike ],
+                                 (char*)"Attack bike",
+                                 100,
+                                 10.f,
+                                 1),
+
+                           Unit( nodUnitsToChooseSs[ militant ],
+                                 const_cast<char*>("Militant"),
+                                 100,
+                                 10.f,
+                                 1),
+
+                           Unit( nodUnitsToChooseSs[ avatar ],
+                                 const_cast<char*>("Avatar"),
+                                 100,
+                                 10.f,
+                                 1),
+
+                           Unit( nodUnitsToChooseSs[ carryall ],
+                                 const_cast<char*>("Carryall"),
+                                 100,
+                                 10.f,
+                                 1),
+
+                           Unit( nodUnitsToChooseSs[ commando_slut ],
+                                 const_cast<char*>("Commando"),
+                                 100,
+                                 10.f,
+                                 1),
+
+                           Unit( nodUnitsToChooseSs[ fanatic ],
+                                 const_cast<char*>("Fanatic"),
+                                 100,
+                                 10.f,
+                                 1),
+
+                           Unit( nodUnitsToChooseSs[ flame_tank ],
+                                 const_cast<char*>("Flame tank"),
+                                 100,
+                                 10.f,
+                                 1),
+
+                           Unit( nodUnitsToChooseSs[ black_hand ],
+                                 const_cast<char*>("Black hand"),
+                                 100,
+                                 10.f,
+                                 1),
+
+                           Unit( nodUnitsToChooseSs[ shadow ],
+                                 const_cast<char*>("Shadow"),
+                                 100,
+                                 10.f,
+                                 1),
+
+                           Unit( nodUnitsToChooseSs[ scorp ],
+                                 const_cast<char*>("Scorpion tank"),
+                                 100,
+                                 10.f,
+                                 1),
+
+                           Unit( nodUnitsToChooseSs[ saboteur ],
+                                 const_cast<char*>("Saboteur"),
+                                 100,
+                                 10.f,
+                                 1),
+
+                           Unit( nodUnitsToChooseSs[ rocket ],
+                                 const_cast<char*>("Rocket soldier"),
+                                 100,
+                                 10.f,
+                                 1)
+
+                   };
+    for( auto& x : allNodUnitsDB )
     {
-        nodUnitsToChooseSs[i].setPosition( 2.f+70.f*i, leftMenuItemsYoffset );
-        unitsToChooseFromRT.draw( nodUnitsToChooseSs[i] );
+        x.getPortrait().setOrigin( unitWidth/2, unitHeight/2 );
+        x.getPortrait().setScale( 0.6f, 0.6f );
     }
-    // range units
-    for( int i=3; i<5; ++i )
+
+    int xAligningIter = 0;
+    // HERO UNITS
+    for( int i=0; i<2; ++i )
     {
-        nodUnitsToChooseSs[i].setPosition( 2.f+70.f*xAligningIter, (leftMenuItemsYoffset*2)-30.f );
-        unitsToChooseFromRT.draw( nodUnitsToChooseSs[i] );
+        nodUnitsToChooseSs[i].setPosition( 20.f+(unitWidth*i), 150 );
         ++xAligningIter;
     }
-    // elite units
-    xAligningIter=0;
-    for( int i=5; i<8; ++i )
+    xAligningIter = 0;
+    // MELEE UNITS
+    for( int i=2; i<6; ++i )
     {
-        nodUnitsToChooseSs[i].setPosition( 2.f+70.f*xAligningIter, (leftMenuItemsYoffset*3)-60.f );
-        unitsToChooseFromRT.draw( nodUnitsToChooseSs[i] );
+        nodUnitsToChooseSs[i].setPosition( 20.f+(unitWidth*xAligningIter), 260 );
         ++xAligningIter;
     }
-    //siege untis
-    xAligningIter=0;
-    for( int i=8; i<11; ++i )
+    xAligningIter = 0;
+    // RANGE UNITS
+    for( int i=6; i<8; ++i )
     {
-        nodUnitsToChooseSs[i].setPosition( 2.f+70.f*xAligningIter, (leftMenuItemsYoffset*4)-90.f );
-        unitsToChooseFromRT.draw( nodUnitsToChooseSs[i] );
+        nodUnitsToChooseSs[i].setPosition( 20.f+(unitWidth*xAligningIter), 360 );
         ++xAligningIter;
     }
-    //monsters
-    // TODO for, for (hueh) future expansions
-    xAligningIter=0;
-    for( int i=11; i<=11; ++i )
+    xAligningIter = 0;
+    // ELITE UNITS
+    for( int i=8; i<10; ++i )
     {
-        nodUnitsToChooseSs[i].setPosition( 2.f+70.f*xAligningIter, (leftMenuItemsYoffset*5)-120.f );
-        unitsToChooseFromRT.draw( nodUnitsToChooseSs[i] );
+        nodUnitsToChooseSs[i].setPosition( 20.f+(unitWidth*xAligningIter), 460 );
         ++xAligningIter;
     }
-    // without display(), texture holds and shows content
-    // flipped horizontally
-    unitsToChooseFromRT.display();
+    xAligningIter = 0;
+    // SIEGE UNITS
+
+        nodUnitsToChooseSs[10].setPosition( 20.f+(unitWidth*xAligningIter), 580 );
+        ++xAligningIter;
+
+    xAligningIter = 0;
+    // MONSTERS
+
+        nodUnitsToChooseSs[11].setPosition( 20.f+(unitWidth*xAligningIter), 690 );
+        ++xAligningIter;
+
+
+
+
+
+    // main texture with whole left menu of units to choose from
+
     //####################################################
     // END OF LEFT UNITS TO CHOOSE MENU
     //####################################################
@@ -159,15 +225,9 @@ void ChoosingScreen::initLoad()
     // max 30 width
     //TODO function to insert \n after every 30 chars would b good
     // idea
-    std::string testDesc = "Speeder bike designed to catching retrieting"
-                            "\nenemy units from battlefield by shootin"
-                        "\nsmart rockets directly into their knees to dont"
-                        "\njust kill them, but to immobilize em and make"
-                        "\nsuffer as long as its possible so it would b"
-                        "\ncool to watch em die :>";
-    descriptionOfUnit.setString(
-            testDesc
-    );
+
+
+
     descriptionOfUnit.setPosition( 40.f, 170.f );
     unitDescriptionT.draw( descriptionOfUnit );
     unitDescriptionS.setPosition( windowWidth-descMenuWidth-5.f, 150.f );

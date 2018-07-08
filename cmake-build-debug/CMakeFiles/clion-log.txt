@@ -1,5 +1,0 @@
-"E:\Tools\CLion 2017.3.2\bin\cmake\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" "E:\C++\SFML_Clion\Moving unit"
--- Found SFML 2.4.2 in E:/Tools/SFML/include
--- Configuring done
--- Generating done
--- Build files have been written to: E:/C++/SFML_Clion/Moving unit/cmake-build-debug

@@ -24,6 +24,7 @@ class HealthBar {
 public:
     HealthBar& operator=( const HealthBar& _healthBar );
     explicit HealthBar( int _health, sf::Color _color = sf::Color::Cyan );
+    HealthBar( const HealthBar& _another );
     sf::RectangleShape& getBar();
     sf::RectangleShape& getOutline();
     sf::Vector2f& getPosition();

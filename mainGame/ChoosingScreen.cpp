@@ -5,6 +5,7 @@
 #include "ChoosingScreen.h"
 #include "choosingScreenInitLoad.inl"
 #include "gameConstants.h"
+
 const sf::Time ChoosingScreen::TimePerFrame = sf::seconds(1.f/60.f);
 
 
@@ -14,83 +15,11 @@ ChoosingScreen::ChoosingScreen(sf::RenderWindow* _winPtr, int _width, int _heigh
   width( _width ),
   height( _height ),
   chooseScreenDeltaY(130),
-  amountOfChosenUnitsToDisplay(0),
-  allGniUnitsDB ({
-        Unit( nodUnitsToChooseSs[ attack_bike ],
-              (char*)"Attack bike",
-              100,
-              10.f,
-              1),
-
-        Unit( nodUnitsToChooseSs[ militant ],
-              const_cast<char*>("Militant"),
-              100,
-              10.f,
-              1),
-
-        Unit( nodUnitsToChooseSs[ avatar ],
-             const_cast<char*>("Avatar"),
-             100,
-             10.f,
-             1),
-
-        Unit( nodUnitsToChooseSs[ carryall ],
-              const_cast<char*>("Carryall"),
-              100,
-              10.f,
-              1),
-
-        Unit( nodUnitsToChooseSs[ commando ],
-              const_cast<char*>("Commando"),
-              100,
-              10.f,
-              1),
-
-        Unit( nodUnitsToChooseSs[ fanatic ],
-              const_cast<char*>("Fanatic"),
-              100,
-              10.f,
-              1),
-
-        Unit( nodUnitsToChooseSs[ flame_tank ],
-              const_cast<char*>("Flame tank"),
-              100,
-              10.f,
-              1),
-
-        Unit( nodUnitsToChooseSs[ black_hand ],
-              const_cast<char*>("Black hand"),
-              100,
-              10.f,
-              1),
-
-        Unit( nodUnitsToChooseSs[ shadow ],
-              const_cast<char*>("Shadow"),
-              100,
-              10.f,
-              1),
-
-        Unit( nodUnitsToChooseSs[ scorp ],
-              const_cast<char*>("Scorpion tank"),
-              100,
-              10.f,
-              1),
-
-        Unit( nodUnitsToChooseSs[ saboteur ],
-              const_cast<char*>("Saboteur"),
-              100,
-              10.f,
-              1),
-
-        Unit( nodUnitsToChooseSs[ rocket ],
-              const_cast<char*>("Rocket soldier"),
-              100,
-              10.f,
-              1),
-
-} )
+  amountOfChosenUnitsToDisplay(0)
+  //allNodUnitsDB()
 {
     initLoad();
+
 }
 
 void ChoosingScreen::processEvents()
@@ -110,6 +39,10 @@ void ChoosingScreen::processEvents()
 
             case sf::Event::MouseButtonReleased:
                 handleInputMouse( event.mouseButton.button );
+                break;
+
+            case sf::Event::KeyReleased:
+                handleInputKeyboard( event.key.code );
                 break;
         }
     }
@@ -143,18 +76,64 @@ void ChoosingScreen::handleInputMouseScroll( float _delta )
 void ChoosingScreen::handleInputMouse( sf::Mouse::Button _released )
 {
     sf::Vector2f mousePos = sf::Vector2f( static_cast<float>(sf::Mouse::getPosition(*gameWindowPtr).x), static_cast<float>(sf::Mouse::getPosition(*gameWindowPtr).y) );
-    if( _released == sf::Mouse::Button::Right )
-    {
-        std::cout << "RMB clicked" << std::endl;
-        for( int i=0; i<amountOfNodUnits; ++i )
-        {
+    std::cout << "RMB clicket at x: " << mousePos.x << " y: " << mousePos.y << std::endl;
+    std::cout << "NOD1: " << nodUnitsToChooseSs[0].getPosition().x+( unitsToChooseFromS.getPosition().x ) << "  " << nodUnitsToChooseSs[0].getPosition().y+( unitsToChooseFromS.getPosition().y+chooseScreenDeltaY-260 ) << std::endl;
+    std::cout << "NOD2: " << nodUnitsToChooseSs[1].getPosition().x+( unitsToChooseFromS.getPosition().x ) << "  " << nodUnitsToChooseSs[1].getPosition().y+( unitsToChooseFromS.getPosition().y+chooseScreenDeltaY-260 ) << std::endl;
 
-            if( nodUnitsToChooseSs[i].getGlobalBounds().contains( mousePos ) )
-            {
-                chosenUnitsOne.emplace_back( allGniUnitsDB[i] );
-                std::cout << "Unit " << allGniUnitsDB[i].getNamePtr() << " added to choosen NOD untis" << std::endl;
-            } // TODO: some random choosing
+    // unit will be chosen or deleted from chosen ones
+    if( _released == sf::Mouse::Button::Right ) {
+        // check if any unit has been chosen
+        for (int i = 0; i < amountOfNodUnits; ++i) {
+            if (nodUnitsToChooseSs[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                std::cout << "Chosen unit at x: " << nodUnitsToChooseSs[i].getPosition().x << " y: "
+                          << nodUnitsToChooseSs[i].getPosition().y << std::endl;
+                if (chosenUnitsOne.size() < 18) {
+                    chosenUnitsOne.push_back(allNodUnitsDB[i]);
+                }
+                std::cout << "Unit " << allNodUnitsDB[i].getNamePtr() << " added to chosen_NOD_untis" << std::endl;
+                std::cout << "UNITS VECTOR: ";
+                for (auto &i : chosenUnitsOne) {
+                    std::cout << i.getNamePtr() << " | ";
+                    puts("");
+                }
+            }
+
         }
+        // check if any unit has been deleted from chosen ones
+        for (std::vector<Unit>::iterator iter = chosenUnitsOne.begin(); iter != chosenUnitsOne.end();) {
+            if (iter->getPortrait().getGlobalBounds().contains(mousePos)) {
+                iter = chosenUnitsOne.erase(iter);
+            } else {
+                ++iter;
+            }
+        }
+    }
+
+        // we will have description of unit to show
+        if( _released == sf::Mouse::Button::Left )
+        {
+            bool alreadySomethingToDisplay = false;
+            for( int i=0; i<amountOfNodUnits; ++i )
+            {
+                if( nodUnitsToChooseSs[i].getGlobalBounds().contains( mousePos ) ){
+                    unitDescriptionS = nodUnitsToChooseSs[i];
+                    unitDescriptionT.draw( unitDescriptionS );
+                    descriptionOfUnit.setString( "lol" );
+                    unitDescriptionT.draw( descriptionOfUnit );
+                }
+            }
+        }
+}
+
+void ChoosingScreen::handleInputKeyboard( sf::Keyboard::Key _released )
+{
+    if( _released == sf::Keyboard::Key::L )
+    {
+        for( auto& x : chosenUnitsOne )
+        {
+            std::cout << x.getNamePtr() << "  ";
+        }
+        puts("");
     }
 }
 
@@ -168,24 +147,31 @@ void ChoosingScreen::run()
     std::cout << "exiting choosing screen..." << std::endl;
 }
 
-void ChoosingScreen::render()
-{
+void ChoosingScreen::render() {
     gameWindowPtr->clear(sf::Color::Black);
-    gameWindowPtr->draw( unitsToChooseFromS );
-    gameWindowPtr->draw( unitsChosenS );
-    for( auto& x : pointsOnMiddleTable )
-        gameWindowPtr->draw( x );
-    gameWindowPtr->draw( pointsOnMiddleTable[0] );
-    gameWindowPtr->draw( unitDescriptionS );
+    gameWindowPtr->draw(unitsToChooseFromS);
+    gameWindowPtr->draw(unitsChosenS);
+    for (auto &x : pointsOnMiddleTable)
+        gameWindowPtr->draw(x);
+    gameWindowPtr->draw(unitDescriptionS);
 
     // middle table of chosen units
 
-    for( size_t chosenUnitsIter=0; chosenUnitsIter < chosenUnitsOne.size(); ++chosenUnitsIter )
-    {
-        chosenUnitsOne[chosenUnitsIter].getPortrait().setPosition( pointsOnMiddleTable[chosenUnitsIter].getPosition() );
-        gameWindowPtr->draw( chosenUnitsOne[chosenUnitsIter].getPortrait() );
+    if (!chosenUnitsOne.empty()) {
+        for (size_t x = 0; x < chosenUnitsOne.size(); ++x) {
+            chosenUnitsOne[x].getPortrait().setPosition(pointsOnMiddleTable[x].getPosition());
+            gameWindowPtr->draw(chosenUnitsOne[x].getPortrait());
+        }
+
     }
 
+    for (int i = 0; i < amountOfNodUnits; ++i) {
+        gameWindowPtr->draw(nodUnitsToChooseSs[i]);
+    }
+
+    for (int i = 0; i < amountOfUnitTypes; ++i) {
+        gameWindowPtr->draw(unitTypes[i]);
+    }
 
     gameWindowPtr->display();
 }

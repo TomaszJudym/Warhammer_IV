@@ -8,6 +8,10 @@
 #include <cmath>
 const float Unit::unitSpeed = 1.5;
 
+Unit::Unit():
+healthBar(0){
+}
+
 Unit::Unit( sf::Sprite& _portrait,
 char* _name,
 int _hp,
@@ -33,7 +37,29 @@ short _team ) :
 {
     initLoad();
 }
-
+/* SIGSEGV : <
+Unit::Unit( const Unit& _another ) :
+healthBar( _another.healthBar )
+{
+    strcpy( _another.name, getNamePtr() );
+    hp = _another.hp;
+    firepower = _another.firepower;
+    team = _another.team;
+    selected = _another.selected;
+    outOfBorder = _another.outOfBorder;
+    inCombat = _another.inCombat;
+    escapesFromCombat = _another.escapesFromCombat;
+    enemies = _another.enemies;
+    escape = _another.escape;
+    currentState = _another.currentState;
+    portrait = _another.portrait;
+    team = _another.team;
+    point = _another.point;
+    pointRect = _another.pointRect;
+    combatChecker = _another.combatChecker;
+    healthBar = _another.healthBar;
+}
+ */
 
 
 void Unit::selectOff() { selected = false; }

@@ -17,6 +17,21 @@ HealthBar::HealthBar( int _health, sf::Color _color )
     outline.setFillColor( sf::Color::White );
 }
 
+HealthBar::HealthBar( const HealthBar& _another )
+{
+    health = _another.health;
+    color = _another.color;
+    percentageHpLost = _another.percentageHpLost;
+    fullHealth = _another.fullHealth;
+
+    bar.setSize( sf::Vector2f( barWidth, barHeight ) );
+    outline.setSize( sf::Vector2f( barWidth, barHeight ) );
+    bar.setFillColor( color );
+    outline.setFillColor( sf::Color::Black );
+    outline.setOutlineThickness( outlineThickness );
+    outline.setFillColor( sf::Color::White );
+}
+
 sf::RectangleShape& HealthBar::getOutline()
 {
     return outline;

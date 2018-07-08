@@ -23,7 +23,9 @@ set(SOURCE_FILES main.cpp
         mainGame/MainMenu.cpp
         mainGame/ChoosingScreen.h
         mainGame/ChoosingScreenInitLoad.inl
-        mainGame/ChoosingScreen.cpp)
+        mainGame/ChoosingScreen.cpp
+        mainGame/betterChoosingScreen.h
+        mainGame/betterChoosingScreen.cpp)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_executable(${PROJECT_NAME} WIN32 ${SOURCE_FILES} mainGame/loadFiles/loader.h)

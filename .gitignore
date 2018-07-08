@@ -1,0 +1,8 @@
+cmake-build-debug/CMakeFiles/Warhammer_II.dir/depend.make
+cmake-build-debug/CMakeFiles/Warhammer_II.dir/mainGame/ChoosingScreen.cpp.obj
+cmake-build-debug/CMakeFiles/Warhammer_II.dir/mainGame/units/Unit.cpp.obj
+cmake-build-debug/CMakeFiles/Warhammer_II.dir/mainGame/units/healthBar/healthBar.cpp.obj
+cmake-build-debug/Warhammer_II.exe
+*.obj
+*.make
+*.exe

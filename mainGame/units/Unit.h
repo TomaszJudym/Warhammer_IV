@@ -57,11 +57,13 @@ private:
     state           currentState;
     HealthBar       healthBar;
 public:
+    Unit();
     explicit Unit( sf::Sprite&,
                    char* _name = (char*)"undefined",
                    int _hp = 100,
                    float _fp = 100.f,
                    short _team=1 );
+    //Unit( const Unit& _another );
     sf::Vector2f& getPoint();
     const sf::Vector2f& getDeltas() const;
     const sf::Vector2f  getEscapeDeltas() const;
