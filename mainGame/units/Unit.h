@@ -46,7 +46,7 @@ private:
 
 
     bool            escapesFromCombat;
-    short team;
+    bool team;
     sf::Vector2f    deltas;
     sf::Vector2f    deltasToEscape;
     sf::Vector2f    borderDeltas;
@@ -83,6 +83,7 @@ public:
     void            fight();
     void            changeHp( float _delta );
     void            die();
+
     void            clearEnemiesVector();
 
 
@@ -95,7 +96,8 @@ public:
 
     short getHP();
     char* getNamePtr() const;
-
+    void setTeam( bool _team );
+    bool getTeam() const;
     sf::Sprite& getPortrait();
     sf::Sprite getPortrait() const;
     sf::RectangleShape& getPointRect();

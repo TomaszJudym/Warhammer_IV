@@ -15,11 +15,25 @@ ChoosingScreen::ChoosingScreen(sf::RenderWindow* _winPtr, int _width, int _heigh
   width( _width ),
   height( _height ),
   chooseScreenDeltaY(130),
-  amountOfChosenUnitsToDisplay(0)
+  amountOfChosenUnitsToDisplay(0),
+  maxOfChosenUnitsToDisplay(18),
+  chosenRace(NOD),
+  choosingScreenRunning( true )
   //allNodUnitsDB()
 {
     initLoad();
 
+}
+// TODO SWITCH BETWEEN ARMIES FOR BOTH PLAYERS
+void changeChosenRaceTo( RACES _race )
+{
+    if( _race == RACES::NOD )
+    {
+        for( int i=0; i<amountOfNodUnits; ++i )
+        {
+
+        }
+    }
 }
 
 void ChoosingScreen::processEvents()
@@ -82,44 +96,102 @@ void ChoosingScreen::handleInputMouse( sf::Mouse::Button _released )
 
     // unit will be chosen or deleted from chosen ones
     if( _released == sf::Mouse::Button::Right ) {
-        // check if any unit has been chosen
-        for (int i = 0; i < amountOfNodUnits; ++i) {
-            if (nodUnitsToChooseSs[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                std::cout << "Chosen unit at x: " << nodUnitsToChooseSs[i].getPosition().x << " y: "
-                          << nodUnitsToChooseSs[i].getPosition().y << std::endl;
-                if (chosenUnitsOne.size() < 18) {
-                    chosenUnitsOne.push_back(allNodUnitsDB[i]);
+
+        // check if any unit has been deleted from the first player chosen
+        if( chosenRace == NOD ) {
+            // check if any unit has been chosen
+            for (int i = 0; i < amountOfNodUnits; ++i) {
+                if (nodUnitsToChooseSs[i].getGlobalBounds().contains( mousePos )) {
+                    if (chosenUnitsOne.size() < maxOfChosenUnitsToDisplay) {
+                        chosenUnitsOne.push_back( std::make_pair< Unit*, const std::string* >( &allNodUnitsDB[i], &nodUnitsDescriptions[i] ));
+                        std::cout << "unit " << allNodUnitsDB[i].getNamePtr() << " added to vector" << std::endl;
+                    }
                 }
-                std::cout << "Unit " << allNodUnitsDB[i].getNamePtr() << " added to chosen_NOD_untis" << std::endl;
-                std::cout << "UNITS VECTOR: ";
-                for (auto &i : chosenUnitsOne) {
-                    std::cout << i.getNamePtr() << " | ";
-                    puts("");
+
+            }
+            // check if any unit has been deleted from the first player chosen
+            for (std::vector< std::pair< Unit*, const std::string* > >::iterator iter = chosenUnitsOne.begin(); iter != chosenUnitsOne.end();) {
+                if (iter->first->getPortrait().getGlobalBounds().contains(mousePos)) {
+                    iter = chosenUnitsOne.erase(iter);
+                } else {
+                    ++iter;
                 }
             }
-
         }
-        // check if any unit has been deleted from chosen ones
-        for (std::vector<Unit>::iterator iter = chosenUnitsOne.begin(); iter != chosenUnitsOne.end();) {
-            if (iter->getPortrait().getGlobalBounds().contains(mousePos)) {
-                iter = chosenUnitsOne.erase(iter);
-            } else {
-                ++iter;
+        if( chosenRace == GDI ) {
+            // check if any unit has been chosen
+            for (int i = 0; i < amountOfGniUnits; ++i) {
+                if (gniUnitsToChooseSs[i].getGlobalBounds().contains( mousePos )) {
+                    if (chosenUnitsTwo.size() < maxOfChosenUnitsToDisplay) {
+                        chosenUnitsTwo.push_back( std::make_pair< Unit*, const std::string* >( &allGniUnitsDB[i], &gniUnitsDescriptions[i] ));
+                        std::cout << "unit " << allGniUnitsDB[i].getNamePtr() << " added to vector" << std::endl;
+                    }
+                }
+
+            }
+            // check if any unit has been deleted from the second player chosen
+            for (std::vector< std::pair< Unit*, const std::string* > >::iterator iter = chosenUnitsTwo.begin(); iter != chosenUnitsTwo.end();) {
+                if (iter->first->getPortrait().getGlobalBounds().contains(mousePos)) {
+                    iter = chosenUnitsTwo.erase(iter);
+                } else {
+                    ++iter;
+                }
             }
         }
     }
 
         // we will have description of unit to show
-        if( _released == sf::Mouse::Button::Left )
-        {
-            bool alreadySomethingToDisplay = false;
-            for( int i=0; i<amountOfNodUnits; ++i )
-            {
-                if( nodUnitsToChooseSs[i].getGlobalBounds().contains( mousePos ) ){
-                    unitDescriptionS = nodUnitsToChooseSs[i];
-                    unitDescriptionT.draw( unitDescriptionS );
-                    descriptionOfUnit.setString( "lol" );
-                    unitDescriptionT.draw( descriptionOfUnit );
+        if( _released == sf::Mouse::Button::Left ) {
+
+            if( playerPortraitSs.first.getGlobalBounds().contains( mousePos ) ){
+                chosenRace = NOD;
+            }
+            if( playerPortraitSs.second.getGlobalBounds().contains( mousePos ) ){
+                chosenRace = GDI;
+            }
+
+            if( chosenRace == GDI ) {
+                for (int i = 0; i < amountOfGniUnits; ++i) {
+                    if (gniUnitsToChooseSs[i].getGlobalBounds().contains(mousePos)) {
+                        unitDescriptionT.clear(sf::Color::Cyan);
+                        portraitOfUnitToDescribe.setTexture(gniUnitsToChooseTs[i]);
+                        descriptionOfUnit.setString(gniUnitsDescriptions[i]);
+                        unitDescriptionT.draw(descriptionOfUnit);
+                        unitDescriptionT.draw(portraitOfUnitToDescribe);
+                        unitDescriptionT.display();
+                    }
+                }
+                for( const auto& x : chosenUnitsTwo ){
+                    if( x.first->getPortrait().getGlobalBounds().contains( mousePos ) ){
+                        unitDescriptionT.clear( sf::Color::Cyan );
+                        portraitOfUnitToDescribe.setTexture( *x.first->getPortrait().getTexture() );
+                        descriptionOfUnit.setString( *x.second );
+                        unitDescriptionT.draw( descriptionOfUnit );
+                        unitDescriptionT.draw( portraitOfUnitToDescribe );
+                        unitDescriptionT.display();
+                    }
+                }
+            }
+            if( chosenRace == NOD ) {
+                for (int i = 0; i < amountOfNodUnits; ++i) {
+                    if (nodUnitsToChooseSs[i].getGlobalBounds().contains( mousePos )) {
+                        unitDescriptionT.clear(sf::Color::Cyan);
+                        portraitOfUnitToDescribe.setTexture(nodUnitsToChooseTs[i]);
+                        descriptionOfUnit.setString(nodUnitsDescriptions[i]);
+                        unitDescriptionT.draw(descriptionOfUnit);
+                        unitDescriptionT.draw(portraitOfUnitToDescribe);
+                        unitDescriptionT.display();
+                    }
+                }
+                for( const auto& x : chosenUnitsOne ){
+                    if( x.first->getPortrait().getGlobalBounds().contains( mousePos ) ){
+                        unitDescriptionT.clear( sf::Color::Cyan );
+                        portraitOfUnitToDescribe.setTexture( *x.first->getPortrait().getTexture() );
+                        descriptionOfUnit.setString( *x.second );
+                        unitDescriptionT.draw( descriptionOfUnit );
+                        unitDescriptionT.draw( portraitOfUnitToDescribe );
+                        unitDescriptionT.display();
+                    }
                 }
             }
         }
@@ -131,19 +203,39 @@ void ChoosingScreen::handleInputKeyboard( sf::Keyboard::Key _released )
     {
         for( auto& x : chosenUnitsOne )
         {
-            std::cout << x.getNamePtr() << "  ";
+            std::cout << x.first->getNamePtr() << "  ";
         }
         puts("");
+        choosingScreenRunning = false;
     }
+
 }
 
 void ChoosingScreen::run()
 {
-    while( gameWindowPtr->isOpen() )
+    sf::Clock clock;
+    sf::Time elapsedTime;
+    sf::Time timeSinceLastUpdate = sf::Time::Zero;
+
+    while( gameWindowPtr->isOpen() && choosingScreenRunning )
     {
-        processEvents();
-        render();
+        elapsedTime = clock.restart();
+        timeSinceLastUpdate += elapsedTime;
+        while( timeSinceLastUpdate > TimePerFrame ) {
+            timeSinceLastUpdate -= TimePerFrame;
+            processEvents();
+            render();
+        }
+
+
+        // DEBUG
+
+        //#########
+
+
     }
+
+
     std::cout << "exiting choosing screen..." << std::endl;
 }
 
@@ -157,21 +249,48 @@ void ChoosingScreen::render() {
 
     // middle table of chosen units
 
-    if (!chosenUnitsOne.empty()) {
-        for (size_t x = 0; x < chosenUnitsOne.size(); ++x) {
-            chosenUnitsOne[x].getPortrait().setPosition(pointsOnMiddleTable[x].getPosition());
-            gameWindowPtr->draw(chosenUnitsOne[x].getPortrait());
+    if( chosenRace == NOD ) {
+        for (int i = 0; i < amountOfNodUnits; ++i) {
+            gameWindowPtr->draw(nodUnitsToChooseSs[i]);
         }
-
+        if (!chosenUnitsOne.empty()) {
+            for (size_t x = 0; x < chosenUnitsOne.size(); ++x) {
+                chosenUnitsOne[x].first->getPortrait().setPosition(pointsOnMiddleTable[x].getPosition());
+                gameWindowPtr->draw(chosenUnitsOne[x].first->getPortrait());
+            }
+        }
     }
 
-    for (int i = 0; i < amountOfNodUnits; ++i) {
-        gameWindowPtr->draw(nodUnitsToChooseSs[i]);
+    else if( chosenRace == GDI ){
+        for( int i=0; i<amountOfGniUnits; ++i ){
+            gameWindowPtr->draw(gniUnitsToChooseSs[i]);
+        }
+        if (!chosenUnitsTwo.empty()) {
+            for (size_t x = 0; x < chosenUnitsTwo.size(); ++x) {
+                chosenUnitsTwo[x].first->getPortrait().setPosition(pointsOnMiddleTable[x].getPosition());
+                gameWindowPtr->draw(chosenUnitsTwo[x].first->getPortrait());
+            }
+        }
     }
 
     for (int i = 0; i < amountOfUnitTypes; ++i) {
         gameWindowPtr->draw(unitTypes[i]);
     }
 
+    gameWindowPtr->draw( playerPortraitSs.first );
+    gameWindowPtr->draw( playerPortraitSs.second );
+
     gameWindowPtr->display();
 }
+
+std::pair< std::vector< Unit >, std::vector<Unit> >* ChoosingScreen::exportChosenUnitsVectors()
+{
+    auto retPtr = new std::pair< std::vector< Unit >, std::vector<Unit> >;
+    for( auto& x : chosenUnitsOne ){
+        retPtr->first.push_back( *x.first );
+    }
+    for( auto& x : chosenUnitsTwo ){
+        retPtr->second.push_back( *x.first );
+    }
+    return retPtr;
+};

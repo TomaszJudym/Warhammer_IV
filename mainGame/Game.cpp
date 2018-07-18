@@ -25,17 +25,33 @@ Game::Game()
     initLoad();
 }
 
+void Game::setPositionsOfReceivedUnits()
+{
+    for( int i=0; i<playersUnitsVectors->first.size(); ++i ){
+        playersUnitsVectors->first[i].getPortrait().setPosition( positionsOfUnitsOne[i] );
+        playersUnitsVectors->first[i].getMainHealthBar().setPosition( sf::Vector2f(playersUnitsVectors->first[i].getPortrait().getPosition().x-(unitWidth/2), playersUnitsVectors->first[i].getPortrait().getPosition().y-healthBarYfit) );
+    }
+    for( int i=0; i<playersUnitsVectors->second.size(); ++i ){
+        playersUnitsVectors->second[i].getPortrait().setPosition( positionsOfUnitsTwo[i] );
+        playersUnitsVectors->second[i].getMainHealthBar().setPosition( sf::Vector2f(playersUnitsVectors->second[i].getPortrait().getPosition().x-(unitWidth/2), playersUnitsVectors->second[i].getPortrait().getPosition().y-healthBarYfit) );
+    }
+
+}
+
 void Game::run()
 {
     sf::Clock clock;
     sf::Clock mainClock;
     sf::Time timeSinceLastUpdate = sf::Time::Zero;
 
+    //mainGameMenu.run();
+    choosingScreen.run();
+    playersUnitsVectors = choosingScreen.exportChosenUnitsVectors();
+    setPositionsOfReceivedUnits();
 
     while (gameWindow.isOpen())
     {
-        //mainGameMenu.run();
-        choosingScreen.run();
+
         sf::Time elapsedTime = clock.restart();
         timeSinceLastUpdate += elapsedTime;
         mainTime = mainClock.getElapsedTime();
@@ -91,15 +107,23 @@ void Game::render()
         choosedUnitBorder.setPosition( choosedUnit->getPortrait().getPosition() );
         gameWindow.draw(choosedUnitBorder);
     }
-    for( auto& i : units ) {
-        gameWindow.draw(i.getPortrait());
-        gameWindow.draw(i.getPointRect());
-        gameWindow.draw( i.getCombatChecker() );
-    }
+
     for( auto& i : units )
     {
         gameWindow.draw( i.getHealthOutline() );
         gameWindow.draw( i.getHealthBar() );
+    }
+
+    // display still figting units
+    for( auto& i : playersUnitsVectors->first ){
+        gameWindow.draw( i.getPortrait() );
+        gameWindow.draw( i.getMainHealthBar().getOutline() );
+        gameWindow.draw( i.getMainHealthBar().getBar() );
+    }
+    for( auto& i : playersUnitsVectors->second ){
+        gameWindow.draw( i.getPortrait() );
+        gameWindow.draw( i.getMainHealthBar().getOutline() );
+        gameWindow.draw( i.getMainHealthBar().getBar() );
     }
 
     gameWindow.draw(statisticsText);
@@ -139,6 +163,7 @@ bool Game::canEscapeFromCombat( const Unit* _entity )
         combatChecker.setPosition(_entity->getPortrait().getPosition().x + _entity->getEscapeDeltas().x * unitHeight / 4,
                                   _entity->getPortrait().getPosition().y + _entity->getEscapeDeltas().y * unitWidth / 4);
 
+
         for (const auto& unitToCheck : units)
         {
             if (&unitToCheck == _entity)
@@ -153,6 +178,23 @@ bool Game::canEscapeFromCombat( const Unit* _entity )
                 }
             }
         }
+    if( _entity->getTeam() == FIRST_ARMY ) {
+        for (const auto &unitToCheck : playersUnitsVectors->second) {
+
+            if (combatChecker.getGlobalBounds().intersects(unitToCheck.getPortrait().getGlobalBounds())) {
+                return false;
+            }
+
+        }
+        if( _entity->getTeam() == SECOND_ARMY ) {
+            for (const auto &unitToCheck : playersUnitsVectors->first) {
+
+                if (combatChecker.getGlobalBounds().intersects(unitToCheck.getPortrait().getGlobalBounds())) {
+                    return false;
+                }
+            }
+        }
+    }
     return true;
 }
 
@@ -224,12 +266,33 @@ void Game::check_units_combat_status() {
     {
         i.clearEnemiesVector();
     }
-
-    // TODO: finish new logic
-    // TODO: checking combat before iterating
-    // TODO: remove switch combat state from other places
+    for( auto& i : playersUnitsVectors->first ){
+        i.clearEnemiesVector();
+    }
+    for( auto& i : playersUnitsVectors->second ){
+        i.clearEnemiesVector();
+    }
 
     // main if to check if therre is anybody to fight with
+    if (playersUnitsVectors->first.size() > 0 && playersUnitsVectors->second.size() > 0 )
+    {
+        for (auto& unit : playersUnitsVectors->first) {
+            for (auto& enemy : playersUnitsVectors->second) {
+                if (unitsAreInCombat(&unit, &enemy))
+                {
+                    unitsEnterCombat(&unit, &enemy);
+                }
+            }
+        }
+        for (auto& unit : playersUnitsVectors->second) {
+            for (auto& enemy : playersUnitsVectors->first) {
+                if (unitsAreInCombat(&unit, &enemy))
+                {
+                    unitsEnterCombat(&unit, &enemy);
+                }
+            }
+        }
+    }
     if (units.size() > 1)
     {
         for (auto &unit : units) {
@@ -245,20 +308,22 @@ void Game::check_units_combat_status() {
 
 void Game::units_fight()
 {
-    int j=0; // int for output
     bool resetFramesToNextAttack = false;
     ++framesToNextAttack;
     if( framesToNextAttack == 200 )
     {
         resetFramesToNextAttack = true;
     }
-    for( auto& i : units )
+    if( resetFramesToNextAttack )
     {
-            if( resetFramesToNextAttack )
-            {
-                i.fight();
-            }
-        ++j;
+        for( auto& i : playersUnitsVectors->first )
+        {
+                    i.fight();
+        }
+        for( auto& i : playersUnitsVectors->second )
+        {
+                    i.fight();
+        }
     }
     if( resetFramesToNextAttack )
         framesToNextAttack = 0;
@@ -277,7 +342,7 @@ void Game::handlePlayerInputMouse(sf::Mouse::Button button, bool isPressed )
         sf::Vector2f pos = sf::Vector2f( static_cast<float>(sf::Mouse::getPosition(gameWindow).x), static_cast<float>(sf::Mouse::getPosition(gameWindow).y) );
         for( auto& i : units )
         {
-                if (i.getPortrait().getGlobalBounds().contains(pos.x, pos.y))
+                if (i.getPortrait().getGlobalBounds().contains( pos ))
                 {
                     std::cout << "unit choosed" << std::endl;
                     choosedUnitBorder.setPosition(i.getPortrait().getPosition());
@@ -290,6 +355,36 @@ void Game::handlePlayerInputMouse(sf::Mouse::Button button, bool isPressed )
                          i.selectOff();
                 }
         }
+        for( auto& i : playersUnitsVectors->first )
+        {
+            if (i.getPortrait().getGlobalBounds().contains( pos ))
+            {
+                std::cout << "unit choosed" << std::endl;
+                choosedUnitBorder.setPosition(i.getPortrait().getPosition());
+                i.selectOn();
+                choosedUnit = &i;
+                return;
+            }   else
+            {
+                if (i.isSelected())
+                    i.selectOff();
+            }
+        }
+        for( auto& i : playersUnitsVectors->second )
+        {
+            if (i.getPortrait().getGlobalBounds().contains( pos ))
+            {
+                std::cout << "unit choosed" << std::endl;
+                choosedUnitBorder.setPosition(i.getPortrait().getPosition());
+                i.selectOn();
+                choosedUnit = &i;
+                return;
+            }   else
+            {
+                if (i.isSelected())
+                    i.selectOff();
+            }
+        }
         if( choosedUnit )
         {
             std::cout << "POINT CHOOSED" << std::endl;
@@ -300,12 +395,23 @@ void Game::handlePlayerInputMouse(sf::Mouse::Button button, bool isPressed )
 
 void Game::update(sf::Time deltaTime)
 {
-    for( int i=0; i<units.size(); ++i )
+    for( int i=0; i<playersUnitsVectors->first.size(); ++i )
     {
 
-        if( units[i].getHP() <= 0 )
+        if( playersUnitsVectors->first[i].getHP() <= 0 )
         {
-            if( choosedUnit == &units[i] )
+            if( choosedUnit == &playersUnitsVectors->first[i] )
+            {
+                choosedUnit = nullptr;
+            }
+        }
+    }
+    for( int i=0; i<playersUnitsVectors->second.size(); ++i )
+    {
+
+        if( playersUnitsVectors->second[i].getHP() <= 0 )
+        {
+            if( choosedUnit == &playersUnitsVectors->second[i] )
             {
                 choosedUnit = nullptr;
             }
@@ -315,8 +421,52 @@ void Game::update(sf::Time deltaTime)
     units.erase( std::remove_if( units.begin(), units.end(),
                                  []( Unit& _un ){ return (_un.getHP() <= 0); }),
                  units.end() );
+    playersUnitsVectors->first.erase( std::remove_if( playersUnitsVectors->first.begin(), playersUnitsVectors->first.end(),
+                                 []( Unit& _un ){ return (_un.getHP() <= 0); }),
+                                      playersUnitsVectors->first.end() );
+    playersUnitsVectors->second.erase( std::remove_if( playersUnitsVectors->second.begin(), playersUnitsVectors->second.end(),
+                                 []( Unit& _un ){ return (_un.getHP() <= 0); }),
+                                       playersUnitsVectors->second.end() );
 
     for( auto& i : units )
+    {
+        if( i.combatStatus() && canEscapeFromCombat( &i ) )
+        {
+            i.setDeltas( i.getEscapeDeltas() );
+            //std::cout << i.getNamePtr() << " escaped" << std::endl;
+            for( int moveIter=0; moveIter<10; ++moveIter )
+            {
+                i.move();
+            }
+        }
+        else
+        {
+            i.move();
+        }
+        i.exitCombat();
+    }
+
+    for( auto& i : playersUnitsVectors->first )
+    {
+        if( i.combatStatus() && canEscapeFromCombat( &i ) )
+        {
+            i.setDeltas( i.getEscapeDeltas() );
+            //std::cout << i.getNamePtr() << " escaped" << std::endl;
+            for( int moveIter=0; moveIter<10; ++moveIter )
+            {
+                i.move();
+            }
+        }
+        else
+        {
+            if( &i == &playersUnitsVectors->first[0] )
+                std::cout << "unit 1.0 moved by " << playersUnitsVectors->first[0].getDeltas().x << " | " << playersUnitsVectors->first[0].getDeltas().y << std::endl;
+            i.move();
+        }
+        i.exitCombat();
+    }
+
+    for( auto& i : playersUnitsVectors->second )
     {
         if( i.combatStatus() && canEscapeFromCombat( &i ) )
         {

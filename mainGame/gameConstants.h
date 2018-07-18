@@ -10,6 +10,8 @@
 
 #include "units/Unit.h"
 
+
+
 enum GAME_STATE{
     MAIN_MENU,
     OPTIONS_MENU,
@@ -37,8 +39,11 @@ const int windowWidth = 1024;
 const int windowHeight = 768;
 
 // UNITS
-const int unitHeight = 120;
-const int unitWidth = 100;
+const short unitHeight = 120;
+const short unitWidth = 100;
+const short racePortraitHeight = 120;
+const short racePortraitWidth = 100;
+
 const float escapeCombatMove = 30.0;
 
 // HEALTHBAR
@@ -100,6 +105,11 @@ const std::string gniUnitsPaths[] = {
         "img/gni/GDIcommando.png",
         "img/gni/GDIbmp.png",
         "img/gni/GDIjugg.png"};
+
+const std::string playerPortraitPaths[] = {
+        "img/players/playerPortrait1.png",
+        "img/players/playerPortrait2.png"
+};
 
 // TODO: create LU of available units to choose of all races
 // TODO: to emplace them in loop into vector of chosen units

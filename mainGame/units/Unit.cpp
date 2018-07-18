@@ -66,7 +66,13 @@ void Unit::selectOff() { selected = false; }
 void Unit::selectOn() { selected = true; }
 bool Unit::isSelected() { return selected; }
 
+void Unit::setTeam( bool _team ){
+    team = _team;
+}
 
+bool Unit::getTeam() const{
+    return team;
+}
 
 
 /* +++++++++++++++++++++++++++++++++++++++++++++++

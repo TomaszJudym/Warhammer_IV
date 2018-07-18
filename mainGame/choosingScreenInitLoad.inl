@@ -26,15 +26,27 @@ void ChoosingScreen::initLoad()
     unitTypes[SIEGE_UNITS].setString( "SIEGE UNITS" );
     unitTypes[MONSTERS].setString( "MONSTERS" );
 
-    // unitsToChooseFromDB portraits:
+    // unitsToChooseFromDB portraits and teams:
     for( auto& i : allNodUnitsDB ) {
         i.getPortrait().setScale(0.7f, 0.7f);
+        i.setTeam( SECOND_ARMY );
+    }
+
+    for( auto& i : allGniUnitsDB ) {
+        i.getPortrait().setScale(0.7f, 0.7f);
+        i.setTeam( FIRST_ARMY );
     }
 
     for( int i=0; i<amountOfNodUnits; ++i ) {
         nodUnitsToChooseTs[i].loadFromFile( nodUnitsPaths[i] );
         nodUnitsToChooseSs[i].setTexture( nodUnitsToChooseTs[i] );
         nodUnitsToChooseSs[i].setScale( 0.5f, 0.5f );
+    }
+
+    for( int i=0; i<amountOfGniUnits; ++i ) {
+        gniUnitsToChooseTs[i].loadFromFile( gniUnitsPaths[i] );
+        gniUnitsToChooseSs[i].setTexture( gniUnitsToChooseTs[i] );
+        gniUnitsToChooseSs[i].setScale( 0.5f, 0.5f );
     }
 
     allNodUnitsDB = {
@@ -111,7 +123,97 @@ void ChoosingScreen::initLoad()
                                  1)
 
                    };
+
+    allGniUnitsDB = {
+            Unit( gniUnitsToChooseSs[ rifle ],
+                  const_cast<char*>("Rifle trooper"),
+                  100,
+                  10.f,
+                  1),
+
+            Unit( gniUnitsToChooseSs[ missile ],
+                  const_cast<char*>("Missile trooper"),
+                  100,
+                  10.f,
+                  1),
+
+            Unit( gniUnitsToChooseSs[ sniper ],
+                  const_cast<char*>("Snoipeh"),
+                  100,
+                  10.f,
+                  1),
+
+            Unit( gniUnitsToChooseSs[ grenade ],
+                  const_cast<char*>("Grenadier"),
+                  100,
+                  10.f,
+                  1),
+
+            Unit( gniUnitsToChooseSs[ mamooth ],
+                  const_cast<char*>("Mammoth tank"),
+                  100,
+                  10.f,
+                  1),
+
+            Unit( gniUnitsToChooseSs[ colos ],
+                  const_cast<char*>("Colos"),
+                  100,
+                  10.f,
+                  1),
+
+            Unit( gniUnitsToChooseSs[ commando ],
+                  const_cast<char*>("Commando"),
+                  100,
+                  10.f,
+                  1),
+
+            Unit( gniUnitsToChooseSs[ bwp ],
+                  const_cast<char*>("BWP"),
+                  100,
+                  10.f,
+                  1),
+
+            Unit( gniUnitsToChooseSs[ juggernaut ],
+                  const_cast<char*>("Juggernaut"),
+                  100,
+                  10.f,
+                  1),
+
+    };
+    nodUnitsDescriptions[attack_bike] = "Dank and fast bike";
+    nodUnitsDescriptions[militant] = "Primary trooper";
+    nodUnitsDescriptions[avatar] = "Advanced powerful mech";
+    nodUnitsDescriptions[carryall] = "Armored air transporter";
+    nodUnitsDescriptions[commando_slut] = "Dangerous girl";
+    nodUnitsDescriptions[fanatic] = "Beliver";
+    nodUnitsDescriptions[flame_tank] = "Like tank with fire";
+    nodUnitsDescriptions[black_hand] = "Heavy troops with flamethrowers";
+    nodUnitsDescriptions[shadow] = "Highly trained black\n"
+                                    "ops unit";
+    nodUnitsDescriptions[scorp] = "Primary battle tank";
+    nodUnitsDescriptions[saboteur] = "Commando unit with\n"
+                                     "setchel charges guy";
+    nodUnitsDescriptions[rocket] = "anti tank infantry";
+
+    gniUnitsDescriptions[rifle] = "Primary trooper";
+    gniUnitsDescriptions[missile] = "Missiles guy";
+    gniUnitsDescriptions[sniper] = "Dank snoipeh";
+    gniUnitsDescriptions[grenade] = "Grenadier after advanved training";
+    gniUnitsDescriptions[mamooth] = "This tank can wreck you\n"
+                                    "up boyyy";
+    gniUnitsDescriptions[colos] = "Heaviest artillery we have";
+    gniUnitsDescriptions[commando] = "Special ops unit";
+    gniUnitsDescriptions[bwp] = "Infantry transporter with HMG";
+    gniUnitsDescriptions[juggernaut] = "Jagger jagger lalalala\n";
+
+    // ###################################### NOD UNITS ######################################
     for( auto& x : allNodUnitsDB )
+    {
+        x.getPortrait().setOrigin( unitWidth/2, unitHeight/2 );
+        x.getPortrait().setScale( 0.6f, 0.6f );
+    }
+
+    for( auto& x : allGniUnitsDB )
     {
         x.getPortrait().setOrigin( unitWidth/2, unitHeight/2 );
         x.getPortrait().setScale( 0.6f, 0.6f );
@@ -155,7 +257,42 @@ void ChoosingScreen::initLoad()
     // MONSTERS
 
         nodUnitsToChooseSs[11].setPosition( 20.f+(unitWidth*xAligningIter), 690 );
+
+    for( auto& x : allNodUnitsDB )
+    {
+        x.getPortrait().setOrigin( unitWidth/2, unitHeight/2 );
+        x.getPortrait().setScale( 0.6f, 0.6f );
+    }
+    //###################################### GNI UNITS ######################################
+    xAligningIter = 0;
+    // HERO UNITS
+    for( int i=0; i<2; ++i )
+    {
+        gniUnitsToChooseSs[i].setPosition( 20.f+(unitWidth*xAligningIter), 150 );
         ++xAligningIter;
+    }
+
+    // MELEE UNITS
+    xAligningIter = 0;
+    for( int i=2; i<4; ++i ) {
+        gniUnitsToChooseSs[i].setPosition(20.f + (unitWidth * xAligningIter), 260);
+        ++xAligningIter;
+    }
+    // RANGE UNITS
+
+    gniUnitsToChooseSs[4].setPosition( 20.f, 360 );
+    // ELITE UNITS
+
+    gniUnitsToChooseSs[5].setPosition( 20.f, 460 );
+    // SIEGE UNITS
+
+    gniUnitsToChooseSs[6].setPosition( 20.f, 580 );
+    // MONSTERS
+
+    gniUnitsToChooseSs[7].setPosition( 20.f, 690 );
+    gniUnitsToChooseSs[8].setPosition( 20.f+unitWidth, 690 );
+
+
 
 
 
@@ -244,4 +381,28 @@ void ChoosingScreen::initLoad()
     //####################################################
     // END OF UNIT DESCRIPTION
     //####################################################
+
+    //####################################################
+    // BEGIN OF PLAYERS PORTRAITS
+    //####################################################
+    playerPortraitTs.first.loadFromFile( playerPortraitPaths[0] );
+    playerPortraitTs.second.loadFromFile( playerPortraitPaths[1] );
+
+    playerPortraitSs.first.setTexture( playerPortraitTs.first );
+    playerPortraitSs.second.setTexture( playerPortraitTs.second );
+
+    playerPortraitSs.first.setOrigin( racePortraitWidth/2, racePortraitWidth/2 );
+    playerPortraitSs.second.setOrigin( racePortraitWidth/2, racePortraitWidth/2 );
+
+    playerPortraitSs.first.setPosition( 270.f, racePortraitHeight/2 );
+    playerPortraitSs.second.setPosition( windowWidth-270.f, racePortraitHeight/2 );
+    //####################################################
+    // END OF PLAYER PORTRAITS
+    //####################################################
+
+    //####################################################
+    // SETTING TEAMS OF UNITS
+    //####################################################
+
+
 }

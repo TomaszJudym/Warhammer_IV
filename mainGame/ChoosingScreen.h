@@ -23,10 +23,15 @@
 
 
 class ChoosingScreen {
+    bool FIRST_ARMY = 1;
+    bool SECOND_ARMY = 0;
     int chooseScreenDeltaY;
     short amountOfChosenUnitsToDisplay;
-
-    std::array<Unit, amountOfNodUnits> allNodUnitsDB;
+    short maxOfChosenUnitsToDisplay;
+    RACES chosenRace;
+    bool choosingScreenRunning;
+    std::array< Unit, amountOfNodUnits> allNodUnitsDB;
+    std::array< Unit, amountOfGniUnits> allGniUnitsDB;
 
     const int width;
     const int height;
@@ -73,13 +78,14 @@ class ChoosingScreen {
     std::array< std::map<std::string, Unit>, amountOfRacesInGame > races;
 
     // untis chosen by first player
-    std::vector<Unit> chosenUnitsOne;
+    std::vector< std::pair< Unit*, const std::string* > > chosenUnitsOne;
 
     // untis chosen by second player
-    std::vector<Unit> chosenUnitsTwo;
+    std::vector< std::pair< Unit*, const std::string* > > chosenUnitsTwo;
 
     // portraits of players to display at the top of screen
-    std::pair<sf::Sprite, sf::Sprite> playerPortraits;
+    std::pair< sf::Texture, sf::Texture > playerPortraitTs;
+    std::pair< sf::Sprite, sf::Sprite > playerPortraitSs;
 
     static const sf::Time	TimePerFrame;
 
@@ -90,10 +96,14 @@ public:
     void handleInputMouseScroll( float _scrollDelta );
     void handleInputMouse( sf::Mouse::Button _released );
     void handleInputKeyboard( sf::Keyboard::Key _released );
+    void changeChooseRaceTo( RACES _race );
     void processEvents();
     void run();
     void render();
-    const std::array<std::string, amountOfNodUnits> nodUntisdescriptions;
+    void exit();
+    std::pair< std::vector< Unit >, std::vector<Unit> >* exportChosenUnitsVectors();
+    std::array<std::string, amountOfNodUnits> nodUnitsDescriptions;
+    std::array<std::string, amountOfGniUnits> gniUnitsDescriptions;
 };
 
 

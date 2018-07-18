@@ -38,6 +38,8 @@ public:
 
 
 private:
+    bool FIRST_ARMY = 1;
+    bool SECOND_ARMY = 0;
     // loading all necessary files inside inline file
     void                    initLoad();
     // changing positions and states of entites
@@ -77,13 +79,17 @@ private:
     //TESTING AREA
     sf::Texture unit1, unit2, unit3, unit4, unit5;
     sf::Sprite guardsman, guardsman2, guardsman3, guardsman4, guardsman5;
+    std::pair< std::vector< Unit >, std::vector<Unit> >* playersUnitsVectors;
     sf::RectangleShape choosedUnitBorder;
     sf::RectangleShape combatChecker;
+    std::array< sf::Vector2f, 18 > positionsOfUnitsOne;
+    std::array< sf::Vector2f, 18 > positionsOfUnitsTwo;
     sf::Vector2f getUnitCombatDirection( const Unit* _attacker, const Unit* _target);
     bool unitsAreInCombat( const Unit* _attacker, const Unit* _target );
     void unitsEnterCombat( Unit* _attacker, Unit* _defender );
     bool unitCanMove( Unit* _entity );
     bool canEscapeFromCombat( const Unit* _entity );
+    void setPositionsOfReceivedUnits();
     //============================
 };
 
