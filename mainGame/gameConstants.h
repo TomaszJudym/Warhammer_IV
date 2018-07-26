@@ -34,6 +34,20 @@ enum RACES{
     GDI,
     NOD
 };
+
+const short amountOfUnitStatistics = 5;
+const short statisticsBarWidth = 200;
+const short statisticsBarHeight = 30;
+const short statisticsHeight = 300;
+const short statisticsWidth = 300;
+
+enum{
+    HP,
+    FIREPOWER,
+    ARMOR,
+    SPEED,
+    AGILITY
+};
 // WINDOW
 const int windowWidth = 1024;
 const int windowHeight = 768;
@@ -41,6 +55,10 @@ const int windowHeight = 768;
 // UNITS
 const short unitHeight = 120;
 const short unitWidth = 100;
+
+const short choosedUnitWidth = 60;
+const short choosedUnitHeight = 50;
+
 const short racePortraitHeight = 120;
 const short racePortraitWidth = 100;
 

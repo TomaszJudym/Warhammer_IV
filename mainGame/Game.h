@@ -18,6 +18,8 @@
 #include <SFML/Window/Event.hpp>
 #include <cmath>
 #include <chrono>
+#include <fstream>
+#include <iostream>
 #include "MainMenu.h"
 #include "ChoosingScreen.h"
 #include "gameConstants.h"
@@ -29,6 +31,7 @@ class Game : private sf::NonCopyable
 public:
 
     Game();
+    ~Game();
     void					run();
     void        check_units_combat_status();
     void        units_fight();
@@ -77,8 +80,6 @@ private:
     std::size_t				statisticsNumFrames;
 
     //TESTING AREA
-    sf::Texture unit1, unit2, unit3, unit4, unit5;
-    sf::Sprite guardsman, guardsman2, guardsman3, guardsman4, guardsman5;
     std::pair< std::vector< Unit >, std::vector<Unit> >* playersUnitsVectors;
     sf::RectangleShape choosedUnitBorder;
     sf::RectangleShape combatChecker;
@@ -90,6 +91,7 @@ private:
     bool unitCanMove( Unit* _entity );
     bool canEscapeFromCombat( const Unit* _entity );
     void setPositionsOfReceivedUnits();
+    void saveOutputLog();
     //============================
 };
 

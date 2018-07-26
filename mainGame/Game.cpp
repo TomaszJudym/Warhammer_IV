@@ -21,19 +21,24 @@ Game::Game()
         , isInChoosingScreen(false)
 {
     gameWindow.setKeyRepeatEnabled(false);
+    gameWindow.setFramerateLimit( 60 );
 
     initLoad();
 }
-
+// fuckn unit border doesnt fit : /
 void Game::setPositionsOfReceivedUnits()
 {
     for( int i=0; i<playersUnitsVectors->first.size(); ++i ){
         playersUnitsVectors->first[i].getPortrait().setPosition( positionsOfUnitsOne[i] );
+        playersUnitsVectors->first[i].getPortrait().setOrigin( choosedUnitWidth, choosedUnitHeight );
         playersUnitsVectors->first[i].getMainHealthBar().setPosition( sf::Vector2f(playersUnitsVectors->first[i].getPortrait().getPosition().x-(unitWidth/2), playersUnitsVectors->first[i].getPortrait().getPosition().y-healthBarYfit) );
+
     }
     for( int i=0; i<playersUnitsVectors->second.size(); ++i ){
         playersUnitsVectors->second[i].getPortrait().setPosition( positionsOfUnitsTwo[i] );
+        playersUnitsVectors->second[i].getPortrait().setOrigin( choosedUnitWidth, choosedUnitHeight);
         playersUnitsVectors->second[i].getMainHealthBar().setPosition( sf::Vector2f(playersUnitsVectors->second[i].getPortrait().getPosition().x-(unitWidth/2), playersUnitsVectors->second[i].getPortrait().getPosition().y-healthBarYfit) );
+
     }
 
 }
@@ -65,6 +70,7 @@ void Game::run()
         updateStatistics(elapsedTime, mainTime);
         render();
     }
+    saveOutputLog();
 }
 
 void Game::processEvents()
@@ -95,10 +101,6 @@ void Game::processEvents()
 
 void Game::render()
 {
-    if( choosedUnit )
-        std::cout << "true" << std::endl;
-    else if( !choosedUnit )
-        std::cout << "false" << std::endl;
     gameWindow.clear();
     gameWindow.setView(gameWindow.getDefaultView());
 
@@ -428,24 +430,6 @@ void Game::update(sf::Time deltaTime)
                                  []( Unit& _un ){ return (_un.getHP() <= 0); }),
                                        playersUnitsVectors->second.end() );
 
-    for( auto& i : units )
-    {
-        if( i.combatStatus() && canEscapeFromCombat( &i ) )
-        {
-            i.setDeltas( i.getEscapeDeltas() );
-            //std::cout << i.getNamePtr() << " escaped" << std::endl;
-            for( int moveIter=0; moveIter<10; ++moveIter )
-            {
-                i.move();
-            }
-        }
-        else
-        {
-            i.move();
-        }
-        i.exitCombat();
-    }
-
     for( auto& i : playersUnitsVectors->first )
     {
         if( i.combatStatus() && canEscapeFromCombat( &i ) )
@@ -459,8 +443,6 @@ void Game::update(sf::Time deltaTime)
         }
         else
         {
-            if( &i == &playersUnitsVectors->first[0] )
-                std::cout << "unit 1.0 moved by " << playersUnitsVectors->first[0].getDeltas().x << " | " << playersUnitsVectors->first[0].getDeltas().y << std::endl;
             i.move();
         }
         i.exitCombat();
@@ -485,3 +467,25 @@ void Game::update(sf::Time deltaTime)
     }
 
 }
+
+Game::~Game()
+{
+    if( choosedUnit )
+        delete choosedUnit;
+
+    // SIGSEGV
+    //delete playersUnitsVectors;
+}
+
+// OUTPUT LOG
+void Game::saveOutputLog()
+{
+    std::ofstream logStream;
+    logStream.open( "logFile.txt" );
+
+    logStream << "unitWidth: " << unitWidth << "\n"
+                 "unitHeight: " << unitHeight << std::endl;
+
+    logStream.close();
+}
+///////////////////

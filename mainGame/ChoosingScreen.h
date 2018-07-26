@@ -11,6 +11,9 @@
 #include <map>
 #include <string>
 #include <array>
+#include <tuple>
+#include <random>
+#include "UnitMenuStatistics/UnitMenuStatistics.h"
 #include "stringHelper.h"
 #include "units/Unit.h"
 #include "gameConstants.h"
@@ -23,8 +26,8 @@
 
 
 class ChoosingScreen {
-    bool FIRST_ARMY = 1;
-    bool SECOND_ARMY = 0;
+    const bool FIRST_ARMY = 1;
+    const bool SECOND_ARMY = 0;
     int chooseScreenDeltaY;
     short amountOfChosenUnitsToDisplay;
     short maxOfChosenUnitsToDisplay;
@@ -32,7 +35,10 @@ class ChoosingScreen {
     bool choosingScreenRunning;
     std::array< Unit, amountOfNodUnits> allNodUnitsDB;
     std::array< Unit, amountOfGniUnits> allGniUnitsDB;
-
+    static UnitMenuStatistics unitMenuStatisticsNodDB[amountOfNodUnits];
+    static UnitMenuStatistics unitMenuStatisticsGniDB[amountOfGniUnits];
+    UnitMenuStatistics* unitStatisticsToDisplay;
+    static UnitStatisticsIcons unitStatsIcons;
     const int width;
     const int height;
     sf::RenderWindow* gameWindowPtr;
@@ -62,6 +68,7 @@ class ChoosingScreen {
 
     std::array<sf::Sprite*, 18> chosenUnitsToDisplay;
     sf::RectangleShape pointsOnMiddleTable[18];
+    sf::Vector2f statsPoint;
     //########################################
 
     //########################################
@@ -78,16 +85,16 @@ class ChoosingScreen {
     std::array< std::map<std::string, Unit>, amountOfRacesInGame > races;
 
     // untis chosen by first player
-    std::vector< std::pair< Unit*, const std::string* > > chosenUnitsOne;
+    std::vector< std::tuple< Unit*, const std::string* , UnitMenuStatistics* > > chosenUnitsOne;
 
     // untis chosen by second player
-    std::vector< std::pair< Unit*, const std::string* > > chosenUnitsTwo;
+    std::vector< std::tuple< Unit*, const std::string* , UnitMenuStatistics* > > chosenUnitsTwo;
 
     // portraits of players to display at the top of screen
     std::pair< sf::Texture, sf::Texture > playerPortraitTs;
     std::pair< sf::Sprite, sf::Sprite > playerPortraitSs;
 
-    static const sf::Time	TimePerFrame;
+    static const sf::Time TimePerFrame;
 
     void initLoad();
 

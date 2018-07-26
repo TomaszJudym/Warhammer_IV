@@ -8,7 +8,37 @@
 
 const sf::Time ChoosingScreen::TimePerFrame = sf::seconds(1.f/60.f);
 
+std::random_device rd;
+std::mt19937 mt( rd() );
+std::uniform_int_distribution<short> dist( 1, 100 );
 
+UnitStatisticsIcons ChoosingScreen::unitStatsIcons;
+UnitMenuStatistics ChoosingScreen::unitMenuStatisticsNodDB[] = {
+        { dist(mt), dist(mt), dist(mt), dist(mt), dist(mt), unitStatsIcons },
+        { dist(mt), dist(mt), dist(mt), dist(mt), dist(mt), unitStatsIcons },
+        { dist(mt), dist(mt), dist(mt), dist(mt), dist(mt), unitStatsIcons },
+        { dist(mt), dist(mt), dist(mt), dist(mt), dist(mt), unitStatsIcons },
+        { dist(mt), dist(mt), dist(mt), dist(mt), dist(mt), unitStatsIcons },
+        { dist(mt), dist(mt), dist(mt), dist(mt), dist(mt), unitStatsIcons },
+        { dist(mt), dist(mt), dist(mt), dist(mt), dist(mt), unitStatsIcons },
+        { dist(mt), dist(mt), dist(mt), dist(mt), dist(mt), unitStatsIcons },
+        { dist(mt), dist(mt), dist(mt), dist(mt), dist(mt), unitStatsIcons },
+        { dist(mt), dist(mt), dist(mt), dist(mt), dist(mt), unitStatsIcons },
+        { dist(mt), dist(mt), dist(mt), dist(mt), dist(mt), unitStatsIcons },
+        { dist(mt), dist(mt), dist(mt), dist(mt), dist(mt), unitStatsIcons }
+};
+// TODO make it smarter ;_;
+UnitMenuStatistics ChoosingScreen::unitMenuStatisticsGniDB[] = {
+        { 100, 90, 80, 70, 60, unitStatsIcons },
+        { 100, 90, 80, 70, 60, unitStatsIcons },
+        { 100, 90, 80, 70, 60, unitStatsIcons },
+        { 100, 90, 80, 70, 60, unitStatsIcons },
+        { 100, 90, 80, 70, 60, unitStatsIcons },
+        { 100, 90, 80, 70, 60, unitStatsIcons },
+        { 100, 90, 80, 70, 60, unitStatsIcons },
+        { 100, 90, 80, 70, 60, unitStatsIcons },
+        { 100, 90, 80, 70, 60, unitStatsIcons }
+};
 
 ChoosingScreen::ChoosingScreen(sf::RenderWindow* _winPtr, int _width, int _height)
 : gameWindowPtr( _winPtr ),
@@ -18,9 +48,11 @@ ChoosingScreen::ChoosingScreen(sf::RenderWindow* _winPtr, int _width, int _heigh
   amountOfChosenUnitsToDisplay(0),
   maxOfChosenUnitsToDisplay(18),
   chosenRace(NOD),
-  choosingScreenRunning( true )
-  //allNodUnitsDB()
+  choosingScreenRunning( true ),
+  statsPoint( 700.f, 400.f ),
+  unitStatisticsToDisplay(nullptr)
 {
+
     initLoad();
 
 }
@@ -90,10 +122,6 @@ void ChoosingScreen::handleInputMouseScroll( float _delta )
 void ChoosingScreen::handleInputMouse( sf::Mouse::Button _released )
 {
     sf::Vector2f mousePos = sf::Vector2f( static_cast<float>(sf::Mouse::getPosition(*gameWindowPtr).x), static_cast<float>(sf::Mouse::getPosition(*gameWindowPtr).y) );
-    std::cout << "RMB clicket at x: " << mousePos.x << " y: " << mousePos.y << std::endl;
-    std::cout << "NOD1: " << nodUnitsToChooseSs[0].getPosition().x+( unitsToChooseFromS.getPosition().x ) << "  " << nodUnitsToChooseSs[0].getPosition().y+( unitsToChooseFromS.getPosition().y+chooseScreenDeltaY-260 ) << std::endl;
-    std::cout << "NOD2: " << nodUnitsToChooseSs[1].getPosition().x+( unitsToChooseFromS.getPosition().x ) << "  " << nodUnitsToChooseSs[1].getPosition().y+( unitsToChooseFromS.getPosition().y+chooseScreenDeltaY-260 ) << std::endl;
-
     // unit will be chosen or deleted from chosen ones
     if( _released == sf::Mouse::Button::Right ) {
 
@@ -103,15 +131,15 @@ void ChoosingScreen::handleInputMouse( sf::Mouse::Button _released )
             for (int i = 0; i < amountOfNodUnits; ++i) {
                 if (nodUnitsToChooseSs[i].getGlobalBounds().contains( mousePos )) {
                     if (chosenUnitsOne.size() < maxOfChosenUnitsToDisplay) {
-                        chosenUnitsOne.push_back( std::make_pair< Unit*, const std::string* >( &allNodUnitsDB[i], &nodUnitsDescriptions[i] ));
+                        chosenUnitsOne.push_back( std::make_tuple< Unit*, const std::string*, UnitMenuStatistics* >( &allNodUnitsDB[i], &nodUnitsDescriptions[i], &unitMenuStatisticsNodDB[i] ));
                         std::cout << "unit " << allNodUnitsDB[i].getNamePtr() << " added to vector" << std::endl;
                     }
                 }
 
             }
             // check if any unit has been deleted from the first player chosen
-            for (std::vector< std::pair< Unit*, const std::string* > >::iterator iter = chosenUnitsOne.begin(); iter != chosenUnitsOne.end();) {
-                if (iter->first->getPortrait().getGlobalBounds().contains(mousePos)) {
+            for (  std::vector< std::tuple< Unit*, const std::string*, UnitMenuStatistics* > >::iterator iter = chosenUnitsOne.begin(); iter != chosenUnitsOne.end(); ) {
+                if ( std::get<0>( *iter )->getPortrait().getGlobalBounds().contains(mousePos)) {
                     iter = chosenUnitsOne.erase(iter);
                 } else {
                     ++iter;
@@ -123,15 +151,15 @@ void ChoosingScreen::handleInputMouse( sf::Mouse::Button _released )
             for (int i = 0; i < amountOfGniUnits; ++i) {
                 if (gniUnitsToChooseSs[i].getGlobalBounds().contains( mousePos )) {
                     if (chosenUnitsTwo.size() < maxOfChosenUnitsToDisplay) {
-                        chosenUnitsTwo.push_back( std::make_pair< Unit*, const std::string* >( &allGniUnitsDB[i], &gniUnitsDescriptions[i] ));
+                        chosenUnitsTwo.push_back( std::make_tuple< Unit*, const std::string*, UnitMenuStatistics* >( &allGniUnitsDB[i], &gniUnitsDescriptions[i], &unitMenuStatisticsGniDB[i] ));
                         std::cout << "unit " << allGniUnitsDB[i].getNamePtr() << " added to vector" << std::endl;
                     }
                 }
 
             }
             // check if any unit has been deleted from the second player chosen
-            for (std::vector< std::pair< Unit*, const std::string* > >::iterator iter = chosenUnitsTwo.begin(); iter != chosenUnitsTwo.end();) {
-                if (iter->first->getPortrait().getGlobalBounds().contains(mousePos)) {
+            for (std::vector< std::tuple< Unit*, const std::string*, UnitMenuStatistics* > >::iterator iter = chosenUnitsTwo.begin(); iter != chosenUnitsTwo.end();) {
+                if ( std::get<0>( *iter )->getPortrait().getGlobalBounds().contains(mousePos)) {
                     iter = chosenUnitsTwo.erase(iter);
                 } else {
                     ++iter;
@@ -156,38 +184,43 @@ void ChoosingScreen::handleInputMouse( sf::Mouse::Button _released )
                         unitDescriptionT.clear(sf::Color::Cyan);
                         portraitOfUnitToDescribe.setTexture(gniUnitsToChooseTs[i]);
                         descriptionOfUnit.setString(gniUnitsDescriptions[i]);
+                        unitStatisticsToDisplay = &unitMenuStatisticsGniDB[i];
                         unitDescriptionT.draw(descriptionOfUnit);
                         unitDescriptionT.draw(portraitOfUnitToDescribe);
                         unitDescriptionT.display();
                     }
                 }
                 for( const auto& x : chosenUnitsTwo ){
-                    if( x.first->getPortrait().getGlobalBounds().contains( mousePos ) ){
+                    if( std::get<0>(x)->getPortrait().getGlobalBounds().contains( mousePos ) ){
                         unitDescriptionT.clear( sf::Color::Cyan );
-                        portraitOfUnitToDescribe.setTexture( *x.first->getPortrait().getTexture() );
-                        descriptionOfUnit.setString( *x.second );
+                        portraitOfUnitToDescribe.setTexture( *std::get<0>( x )->getPortrait().getTexture() );
+                        descriptionOfUnit.setString( *std::get<1>( x ) );
+                        unitStatisticsToDisplay = std::get<2>( x );
                         unitDescriptionT.draw( descriptionOfUnit );
                         unitDescriptionT.draw( portraitOfUnitToDescribe );
                         unitDescriptionT.display();
                     }
                 }
             }
+
             if( chosenRace == NOD ) {
                 for (int i = 0; i < amountOfNodUnits; ++i) {
                     if (nodUnitsToChooseSs[i].getGlobalBounds().contains( mousePos )) {
                         unitDescriptionT.clear(sf::Color::Cyan);
                         portraitOfUnitToDescribe.setTexture(nodUnitsToChooseTs[i]);
                         descriptionOfUnit.setString(nodUnitsDescriptions[i]);
+                        unitStatisticsToDisplay = &unitMenuStatisticsNodDB[i];
                         unitDescriptionT.draw(descriptionOfUnit);
                         unitDescriptionT.draw(portraitOfUnitToDescribe);
                         unitDescriptionT.display();
                     }
                 }
                 for( const auto& x : chosenUnitsOne ){
-                    if( x.first->getPortrait().getGlobalBounds().contains( mousePos ) ){
+                    if( std::get<0>(x)->getPortrait().getGlobalBounds().contains( mousePos ) ){
                         unitDescriptionT.clear( sf::Color::Cyan );
-                        portraitOfUnitToDescribe.setTexture( *x.first->getPortrait().getTexture() );
-                        descriptionOfUnit.setString( *x.second );
+                        portraitOfUnitToDescribe.setTexture( *std::get<0>( x )->getPortrait().getTexture() );
+                        descriptionOfUnit.setString( *std::get<1>( x ) );
+                        unitStatisticsToDisplay = std::get<2>( x );
                         unitDescriptionT.draw( descriptionOfUnit );
                         unitDescriptionT.draw( portraitOfUnitToDescribe );
                         unitDescriptionT.display();
@@ -203,7 +236,7 @@ void ChoosingScreen::handleInputKeyboard( sf::Keyboard::Key _released )
     {
         for( auto& x : chosenUnitsOne )
         {
-            std::cout << x.first->getNamePtr() << "  ";
+            std::cout << std::get<0>( x )->getNamePtr() << "  ";
         }
         puts("");
         choosingScreenRunning = false;
@@ -255,8 +288,8 @@ void ChoosingScreen::render() {
         }
         if (!chosenUnitsOne.empty()) {
             for (size_t x = 0; x < chosenUnitsOne.size(); ++x) {
-                chosenUnitsOne[x].first->getPortrait().setPosition(pointsOnMiddleTable[x].getPosition());
-                gameWindowPtr->draw(chosenUnitsOne[x].first->getPortrait());
+                 std::get<0>( chosenUnitsOne[x] )->getPortrait().setPosition(pointsOnMiddleTable[x].getPosition());
+                gameWindowPtr->draw( std::get<0>( chosenUnitsOne[x] )->getPortrait());
             }
         }
     }
@@ -267,8 +300,8 @@ void ChoosingScreen::render() {
         }
         if (!chosenUnitsTwo.empty()) {
             for (size_t x = 0; x < chosenUnitsTwo.size(); ++x) {
-                chosenUnitsTwo[x].first->getPortrait().setPosition(pointsOnMiddleTable[x].getPosition());
-                gameWindowPtr->draw(chosenUnitsTwo[x].first->getPortrait());
+                std::get<0>( chosenUnitsTwo[x] )->getPortrait().setPosition(pointsOnMiddleTable[x].getPosition());
+                gameWindowPtr->draw( std::get<0>( chosenUnitsTwo[x] )->getPortrait());
             }
         }
     }
@@ -279,6 +312,10 @@ void ChoosingScreen::render() {
 
     gameWindowPtr->draw( playerPortraitSs.first );
     gameWindowPtr->draw( playerPortraitSs.second );
+    if( unitStatisticsToDisplay ) {
+        unitStatisticsToDisplay->setPosition(statsPoint.x, statsPoint.y);
+        unitStatisticsToDisplay->draw(gameWindowPtr);
+    }
 
     gameWindowPtr->display();
 }
@@ -287,10 +324,10 @@ std::pair< std::vector< Unit >, std::vector<Unit> >* ChoosingScreen::exportChose
 {
     auto retPtr = new std::pair< std::vector< Unit >, std::vector<Unit> >;
     for( auto& x : chosenUnitsOne ){
-        retPtr->first.push_back( *x.first );
+        retPtr->first.push_back( *std::get<0>( x ) );
     }
     for( auto& x : chosenUnitsTwo ){
-        retPtr->second.push_back( *x.first );
+        retPtr->second.push_back( *std::get<0>( x ) );
     }
     return retPtr;
 };

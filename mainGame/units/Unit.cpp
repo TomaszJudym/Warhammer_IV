@@ -5,7 +5,7 @@
 
 #include "unitAdds.inl"
 #include "Unit.h"
-#include <cmath>
+
 const float Unit::unitSpeed = 1.5;
 
 Unit::Unit():
@@ -479,7 +479,6 @@ bool& Unit::combatStatus()
 {
     return inCombat;
 }
-
 
 Unit::~Unit()
 {

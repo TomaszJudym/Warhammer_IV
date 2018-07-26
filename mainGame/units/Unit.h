@@ -8,6 +8,7 @@
 #include <iostream>
 #include <vector>
 #include <cstring>
+#include <cmath>
 #include "healthBar/healthBar.h"
 #include "../gameConstants.h"
 #ifndef _UNIT_H
@@ -87,12 +88,12 @@ public:
     void            clearEnemiesVector();
 
 
-    // HEALTH BAR
-
+// HEALTH BAR #########################
     sf::RectangleShape& getHealthBar();
     sf::RectangleShape& getHealthOutline();
     HealthBar& getMainHealthBar();
     HealthBar getMainHealthBar() const;
+//###################################
 
     short getHP();
     char* getNamePtr() const;
