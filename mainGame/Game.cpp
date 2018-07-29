@@ -19,6 +19,8 @@ Game::Game()
         , choosingScreen( &gameWindow, windowWidth, windowHeight )
         , isInMainMenu(true)
         , isInChoosingScreen(false)
+        , endingScreen( &gameWindow )
+        , mainGameIsRunning(true)
 {
     gameWindow.setKeyRepeatEnabled(false);
     gameWindow.setFramerateLimit( 60 );
@@ -54,7 +56,7 @@ void Game::run()
     playersUnitsVectors = choosingScreen.exportChosenUnitsVectors();
     setPositionsOfReceivedUnits();
 
-    while (gameWindow.isOpen())
+    while (gameWindow.isOpen() && mainGameIsRunning)
     {
 
         sf::Time elapsedTime = clock.restart();
@@ -70,6 +72,7 @@ void Game::run()
         updateStatistics(elapsedTime, mainTime);
         render();
     }
+    endingScreen.run();
     saveOutputLog();
 }
 
@@ -312,7 +315,7 @@ void Game::units_fight()
 {
     bool resetFramesToNextAttack = false;
     ++framesToNextAttack;
-    if( framesToNextAttack == 200 )
+    if( framesToNextAttack == 50 )
     {
         resetFramesToNextAttack = true;
     }
@@ -465,13 +468,21 @@ void Game::update(sf::Time deltaTime)
         }
         i.exitCombat();
     }
-
+    // one of armies defeated, end of game
+    if( playersUnitsVectors->first.empty() && playersUnitsVectors->second.empty() ){
+        mainGameIsRunning = false;
+        if( playersUnitsVectors->first.empty()  )
+            endingScreen.setWinner( "FIRST" );
+        if( playersUnitsVectors->second.empty() )
+            endingScreen.setWinner( "SECOND" );
+    }
 }
 
 Game::~Game()
 {
-    if( choosedUnit )
-        delete choosedUnit;
+    //SIGSEGV
+  //  if( choosedUnit )
+     //   delete choosedUnit;
 
     // SIGSEGV
     //delete playersUnitsVectors;

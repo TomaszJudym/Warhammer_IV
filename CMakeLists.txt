@@ -25,7 +25,7 @@ set(SOURCE_FILES main.cpp
         mainGame/ChoosingScreenInitLoad.inl
         mainGame/ChoosingScreen.cpp
         mainGame/UnitMenuStatistics/UnitMenuStatistics.cpp
-        mainGame/UnitMenuStatistics/UnitMenuStatistics.h)
+        mainGame/UnitMenuStatistics/UnitMenuStatistics.h mainGame/EndingScreen/EndingScreen.cpp mainGame/EndingScreen/EndingScreen.h)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_executable(${PROJECT_NAME} WIN32 ${SOURCE_FILES} mainGame/loadFiles/loader.h)

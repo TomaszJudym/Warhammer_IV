@@ -45,7 +45,6 @@ class ChoosingScreen {
     sf::Font choosingScreenFont;
     //########################################
     // left div with units to choose from
-    sf::RenderTexture unitsToChooseFromRT;
     sf::Sprite unitsToChooseFromS;
 
     // left menu of units to choose from
@@ -66,7 +65,6 @@ class ChoosingScreen {
     sf::Texture unitsChosenT;
     sf::Sprite unitsChosenS;
 
-    std::array<sf::Sprite*, 18> chosenUnitsToDisplay;
     sf::RectangleShape pointsOnMiddleTable[18];
     sf::Vector2f statsPoint;
     //########################################
@@ -78,7 +76,6 @@ class ChoosingScreen {
     sf::Sprite portraitOfUnitToDescribe;
     sf::Text descriptionOfUnit;
 
-    // TODO separate object for units bars with stats
     //########################################
 
     // array of maps with units of each faction

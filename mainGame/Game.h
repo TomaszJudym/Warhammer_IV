@@ -22,6 +22,7 @@
 #include <iostream>
 #include "MainMenu.h"
 #include "ChoosingScreen.h"
+#include "EndingScreen/EndingScreen.h"
 #include "gameConstants.h"
 #include "units/Unit.h"
 
@@ -69,6 +70,8 @@ private:
     // player should be able to come back to it after pressing back button
     MainMenu mainGameMenu;
     ChoosingScreen choosingScreen;
+    EndingScreen endingScreen;
+    bool mainGameIsRunning;
 
     std::vector<Unit>       units;
     Unit*                   choosedUnit;

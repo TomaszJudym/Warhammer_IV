@@ -87,9 +87,12 @@ void ChoosingScreen::processEvents()
                 handleInputMouse( event.mouseButton.button );
                 break;
 
+                // DEBUG PURPOSES
+
             case sf::Event::KeyReleased:
                 handleInputKeyboard( event.key.code );
                 break;
+
         }
     }
 }
